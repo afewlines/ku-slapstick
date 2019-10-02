@@ -1,13 +1,11 @@
-const app = require('express')()
-const server = require('http').createServer(app)
-const io = require('socket.io')(server)
-//const bodyParser = require('body-parser')
-const cors = require('cors')
-const morgan = require('morgan')
+const app = require('express')();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+const cors = require('cors');
+const morgan = require('morgan');
 
-app.use(morgan('combined'))
-//app.use(bodyParser.json())
-app.use(cors())
+app.use(morgan('combined'));
+app.use(cors());
 
 io.on('connection', client => {
   console.log("CLIENT CONNECTED");
@@ -21,11 +19,12 @@ io.on('connection', client => {
   });
   client.on('addPlayer', (username) => {
     console.log(`Adding player ${username}`);
-    client.emit('messageChannel', 'Player Added')
+    client.emit('messageChannel', 'Player Added');
   });
 })
 
 server.listen(4578)
+console.log("PAST");
 
 /*
 const store = new Vuex.Store({

@@ -7,7 +7,7 @@ import VueSocketIO from 'vue-socket.io';
 Vue.use(Vuex)
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: 'http://localhost:4578',
+  connection: 'http://10.250.17.232:4578',
   query: {
     token: window.localStorage.getItem('auth')
   }
