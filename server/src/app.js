@@ -9,8 +9,8 @@ app.use(cors());
 
 io.on('connection', client => {
   console.log("CLIENT CONNECTED");
-  console.log("");
   console.log(client.id);
+  console.log("");
   client.on('event', data => {
     // event template
   });
@@ -25,35 +25,3 @@ io.on('connection', client => {
 
 server.listen(4578)
 console.log("PAST");
-
-/*
-const store = new Vuex.Store({
-  state: {
-    playing: false, // is in game?
-    players: [], // the players and their wins
-    activity: '' // what game is being played
-  },
-  mutations: {
-    playmode(state, payload) {
-      state.playing = payload ? true : false;
-    },
-    addPlayer(state, username) {
-      state.players.push({ name: username, score: 0 });
-    },
-    removePlayer(state, username) {
-      state.players = state.players.filter(player => (player.name == username));
-    }
-  },
-  getters: {
-    isPlaying: state => {
-      return state.playing;
-    },
-    players: state => {
-      return state.players;
-    },
-    currentActivity: state => {
-      return state.activity == '' ? 'No Activity Selected' : state.activity;
-    }
-  }
-})
-*/

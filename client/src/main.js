@@ -4,13 +4,16 @@ import App from './App.vue'
 import router from './router.js'
 import VueSocketIO from 'vue-socket.io';
 
-Vue.use(Vuex)
+function getip() {
+  var a = window.document.domain;
+  console.log(a);
+  return a;
+}
+
+Vue.use(Vuex);
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: 'http://10.250.17.232:4578',
-  query: {
-    token: window.localStorage.getItem('auth')
-  }
+  connection: "http://" + getip() + ":4578"
 }));
 
 Vue.config.productionTip = false
