@@ -15,7 +15,7 @@
         Enter a username and enjoy.
       </p>
       <p v-if="isConnected">We're connected to the server!</p>
-      <p>Message from server: "{{socketMessage}}"</p>
+      <p v-if="messageReceived">Message from server: "{{socketMessage}}"</p>
     </div>
     <div class="box"
       id="entrance">
@@ -55,7 +55,8 @@ export default {
     return {
       username: '',
       isConnected: false,
-      socketMessage: ''
+      socketMessage: '',
+      messageReceived: false
     }
   },
   sockets: {
@@ -70,7 +71,8 @@ export default {
 
     // Fired when the server sends something on the "messageChannel" channel.
     messageChannel(data) {
-      this.socketMessage = data
+      this.socketMessage = data;
+      this.messageReceived = true;
     }
   },
   methods: {

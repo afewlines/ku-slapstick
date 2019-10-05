@@ -6,10 +6,54 @@
 
     <div class="box"
       id="landing">
-      <p>
-        Y O U A R E T H E A D M I N
-      </p>
+      <p><b>Game Admin Options</b></p>
     </div>
+  
+    <div class="box" id="entrance">
+      <form id="adminForm" v-on:submit="submitAdmin">
+
+      <!-- Game Selection -->
+      <div> Game Selection:
+      <select v-model="game"
+        required="required">
+
+        <option disabled value=""> Select a game to play</option>
+        <option>Gaming Trivia</option>
+        <option>Other games...</option>
+      </select>
+      </div>
+      <br><br>
+  
+      <!-- Timer Selection -->
+      <div> Timer Selection:
+      <select v-model="timer"
+        required="required">
+
+        <option disabled value="">Select the length of each question</option>
+        <option>5 seconds</option>
+        <option>10 seconds</option>
+        <option>15 seconds</option>
+        <option>20 seconds</option>
+      </select>
+      </div>
+
+      <input type="submit" class="button" id="submitAdmin" value="Submit">
+      </form>
+
+      <!-- Ready to begin playing -->
+      <div v-if="messageReceived">{{socketMessage}}
+        <div v-if="!beginGame">
+          Click Play to begin game:
+          <form id="playForm" v-on:submit="submitPlay">
+            <input type="submit" class="button" id="submitPlay" value="Play">
+          </form>
+        </div>
+        <div v-if="beginGame">
+          <h2>Game Successfully Started</h2>
+        </div>
+      </div> 
+
+    </div>	 
 
     <FooterComponent></FooterComponent>
   </div>
@@ -29,42 +73,28 @@ export default {
   },
   data() {
     return {
-      admin: ''
+      game: '',
+      timer: '',
+      messageReceived: false,
+      socketMessage: '',
+      beginGame: false
+    }
+  },
+  sockets: {
+    messageChannel(data) {
+      this.socketMessage = data;
+      this.messageReceived = true;
+    },
+    beginGame(data) {
+      this.beginGame = data;
     }
   },
   methods: {
-    submitUsername() {
-      // no input fail
-      if (this.username.length < 1) {
-        return;
-      }
-
-      var lettersLower = "abcdefghijklmnopqrstuvwxyz";
-      var lettersUpper = lettersLower.toUpperCase();
-      var numerals = "0123456789";
-      var punctuation = " .,!?'#$%&()*+-/:=@^_|~";
-      var complete = lettersLower + lettersUpper + numerals + punctuation
-
-      var nameArray = this.username.split("");
-      var offenders = [];
-
-      for (var i = 0; i < nameArray.length; i++) {
-        if (!complete.includes(nameArray[i])) {
-          if (!offenders.includes(nameArray[i])) {
-            offenders.push(nameArray[i]);
-          }
-        }
-      }
-
-      if (offenders.length > 0) {
-        window.alert("Username contains ILLEGAL characters!!\nHere they are: " + offenders.join(""));
-        this.username = "";
-        return;
-      }
-
-      console.log("username \"" + this.username + "\" checks out!");
-      //socket.emit('user connect', this.username);
-      this.$store.commit('addPlayer', this.username);
+    submitAdmin() {
+      this.$socket.emit('submitAdmin', this.game, this.timer);
+    },
+    submitPlay() {
+      this.$socket.emit('submitPlay', "BEGIN GAME");
     }
   },
 }

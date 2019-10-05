@@ -5,7 +5,6 @@ import LandingScene from './views/Landing.vue'
 import AdminScene from './views/Admin.vue'
 
 Vue.use(Router)
-
 export default new Router({
   routes: [{
       path: '/',

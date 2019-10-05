@@ -2,7 +2,13 @@
  kutztown university csc senior project
 
 ---
+#### How To Run:
+  Requires: Nodejs
+  Execute 'npm start' in client/ in one terminal
+  Execute 'npm start' in server/ in another terminal
 
+---
+  
 #### the lads
 - noah cregger
 - stephen harbeck
