@@ -3,9 +3,9 @@
 
 ---
 #### How To Run:
-  Requires: Nodejs
-  Execute 'npm start' in client/ in one terminal
-  Execute 'npm start' in server/ in another terminal
+  Requires: Nodejs </br>
+  Execute 'npm start' in client/ in one terminal </br>
+  Execute 'npm start' in server/ in another terminal </br>
 
 ---
   
