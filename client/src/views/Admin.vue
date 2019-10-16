@@ -8,52 +8,63 @@
       id="landing">
       <p><b>Game Admin Options</b></p>
     </div>
-  
-    <div class="box" id="entrance">
-      <form id="adminForm" v-on:submit="submitAdmin">
 
-      <!-- Game Selection -->
-      <div> Game Selection:
-      <select v-model="game"
-        required="required">
+    <div class="box"
+      id="entrance">
+      <form id="adminForm"
+        v-on:submit="submitAdmin">
 
-        <option disabled value=""> Select a game to play</option>
-        <option>Gaming Trivia</option>
-        <option>Other games...</option>
-      </select>
-      </div>
-      <br><br>
-  
-      <!-- Timer Selection -->
-      <div> Timer Selection:
-      <select v-model="timer"
-        required="required">
+        <!-- Game Selection -->
+        <div> Game Selection:
+          <select v-model="game"
+            required="required">
 
-        <option disabled value="">Select the length of each question</option>
-        <option>5 seconds</option>
-        <option>10 seconds</option>
-        <option>15 seconds</option>
-        <option>20 seconds</option>
-      </select>
-      </div>
+            <option disabled
+              value=""> Select a game to play</option>
+            <option>Gaming Trivia</option>
+            <option>Other games...</option>
+          </select>
+        </div>
+        <br><br>
 
-      <input type="submit" class="button" id="submitAdmin" value="Submit">
+        <!-- Timer Selection -->
+        <div> Timer Selection:
+          <select v-model="timer"
+            required="required">
+
+            <option disabled
+              value="">Select the length of each question</option>
+            <option>5 seconds</option>
+            <option>10 seconds</option>
+            <option>15 seconds</option>
+            <option>20 seconds</option>
+          </select>
+        </div>
+
+        <input type="submit"
+          class="button"
+          id="submitAdmin"
+          value="Submit">
       </form>
 
       <!-- Ready to begin playing -->
       <div v-if="messageReceived">{{socketMessage}}
         <div v-if="!beginGame">
           Click Play to begin game:
-          <form id="playForm" v-on:submit="submitPlay">
-            <input type="submit" class="button" id="submitPlay" value="Play">
+          <form id="playForm"
+            v-on:submit="submitPlay">
+            <input type="submit"
+              class="button"
+              id="submitPlay"
+              value="Play">
           </form>
         </div>
         <div v-if="beginGame">
           <h2>Game Successfully Started</h2>
         </div>
-      </div> 
+      </div>
 
-    </div>	 
+    </div>
 
     <FooterComponent></FooterComponent>
   </div>

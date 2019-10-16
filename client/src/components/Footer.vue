@@ -1,6 +1,6 @@
 <template>
 <div id="footer">
-  <p>Copyrighted NEVERXVII, probably</p>
+  <p>From Cesspool Interactive, with love.</p>
 </div>
 </template>
 
@@ -22,6 +22,7 @@ div {
   text-align: center;
   font-weight: 100;
   font-size: 0.9em;
+  font-style: italic;
   background-color: #c69999;
   color: #3a3c38;
 }
