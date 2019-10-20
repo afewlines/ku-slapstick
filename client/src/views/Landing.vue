@@ -64,11 +64,9 @@ export default {
       // Fired when the socket connects.
       this.isConnected = true;
     },
-
     disconnect() {
       this.isConnected = false;
     },
-
     // Fired when the server sends something on the "messageChannel" channel.
     messageChannel(data) {
       this.socketMessage = data;
@@ -107,7 +105,9 @@ export default {
 
       console.log("username \"" + this.username + "\" checks out!");
       //socket.emit('user connect', this.username);
-      this.$socket.emit('addPlayer', this.username);
+      this.$store.commit('setUsername', this.username);
+      this.$socket.emit('addPlayer', this.$store.getters.getUsername);
+      this.$router.push('/play');
     }
   },
 }
