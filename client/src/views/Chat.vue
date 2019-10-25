@@ -41,7 +41,7 @@ import Footer from '@/components/Footer.vue'
 
 
 export default {
-  name: 'PlayScene',
+  name: 'ChatScene',
   components: {
     'FooterComponent': Footer,
     'HeaderComponent': Header,
