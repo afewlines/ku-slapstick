@@ -74,12 +74,16 @@ export default {
     }
   },
   methods: {
-    submitUsername() {
+    submitUsername(payload = null) {
+      // if fired from event, stop submit event
+      if (payload != null) {
+        payload.preventDefault();
+      }
+
       // no input fail
       if (this.username.length < 1) {
         return;
       }
-
       var lettersLower = "abcdefghijklmnopqrstuvwxyz";
       var lettersUpper = lettersLower.toUpperCase();
       var numerals = "0123456789";
