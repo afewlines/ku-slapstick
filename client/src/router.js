@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import LandingScene from './views/Landing.vue'
 import AdminScene from './views/Admin.vue'
 import PlayScene from './views/Play.vue'
+import ChatScene from './views/Chat.vue'
 
 Vue.use(Router)
 export default new Router({
@@ -21,6 +22,11 @@ export default new Router({
       path: '/play',
       name: 'Play',
       component: PlayScene,
+    },
+    {
+      path: '/chat',
+      name: 'Chat',
+      component: ChatScene,
     }
   ]
 })
