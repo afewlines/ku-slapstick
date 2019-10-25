@@ -20,20 +20,26 @@ Vue.config.productionTip = false
 
 const store = new Vuex.Store({
   state: {
-    socket: {} // maybe
+    socket: {}, // maybe
+    username: ""
   },
   mutations: {
     SOCKET_CONNECT(state) {
       state.isConnected = true;
     },
-
     SOCKET_DISCONNECT(state) {
       state.isConnected = false;
+    },
+    setUsername(state, payload) {
+      state.username = payload;
     }
   },
   getters: {
     getSock: state => {
       return state.socket;
+    },
+    getUsername: state => {
+      return state.username;
     }
   }
 })

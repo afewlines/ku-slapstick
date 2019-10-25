@@ -9,8 +9,6 @@ app.use(cors());
 
 io.on('connection', client => {
   console.log("CLIENT CONNECTED");
-  console.log(client.id);
-  console.log("");
   client.on('event', data => {
     // event template
   });
@@ -28,9 +26,12 @@ io.on('connection', client => {
   client.on('submitPlay', (data) => {
     console.log(`${data}`);
     client.emit('beginGame', 'true');
-    // Do something to begin game  
+    // Do something to begin game
+  });
+
+  client.on('submitChat', (user, msg) => {
+    io.emit('chat', [user, msg]);
   });
 })
 
 server.listen(4578)
-console.log("PAST");

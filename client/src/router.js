@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 import LandingScene from './views/Landing.vue'
 import AdminScene from './views/Admin.vue'
+import PlayScene from './views/Play.vue'
 
 Vue.use(Router)
 export default new Router({
@@ -15,6 +16,11 @@ export default new Router({
       path: '/admin',
       name: 'Admin',
       component: AdminScene,
+    },
+    {
+      path: '/play',
+      name: 'Play',
+      component: PlayScene,
     }
   ]
 })

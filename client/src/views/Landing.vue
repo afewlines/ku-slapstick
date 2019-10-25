@@ -64,11 +64,9 @@ export default {
       // Fired when the socket connects.
       this.isConnected = true;
     },
-
     disconnect() {
       this.isConnected = false;
     },
-
     // Fired when the server sends something on the "messageChannel" channel.
     messageChannel(data) {
       this.socketMessage = data;
@@ -76,12 +74,16 @@ export default {
     }
   },
   methods: {
-    submitUsername() {
+    submitUsername(payload = null) {
+      // if fired from event, stop submit event
+      if (payload != null) {
+        payload.preventDefault();
+      }
+
       // no input fail
       if (this.username.length < 1) {
         return;
       }
-
       var lettersLower = "abcdefghijklmnopqrstuvwxyz";
       var lettersUpper = lettersLower.toUpperCase();
       var numerals = "0123456789";
@@ -107,7 +109,9 @@ export default {
 
       console.log("username \"" + this.username + "\" checks out!");
       //socket.emit('user connect', this.username);
-      this.$socket.emit('addPlayer', this.username);
+      this.$store.commit('setUsername', this.username);
+      this.$socket.emit('addPlayer', this.$store.getters.getUsername);
+      this.$router.push('/play');
     }
   },
 }
