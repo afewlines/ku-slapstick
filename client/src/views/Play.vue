@@ -2,13 +2,9 @@
 <div class="app-wrapper">
   <div class="wrapper">
     <HeaderComponent></HeaderComponent>
-
-    <div class="game"
-      v-html="renderData">
+    <div v-if="loaded">
+      <RendererPlayer> </RendererPlayer>
     </div>
-
-
-
     <FooterComponent></FooterComponent>
   </div>
 </div>
@@ -18,43 +14,63 @@
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
+import Vue from 'vue'
+import request from 'request'
 
+function remoteComponent(url) {
+  const name = url.split('/').reverse()[0].match(/^(.*?)\.umd/)[1];
 
+  if (window[name]) return window[name];
+
+  window[name] = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.async = true;
+    script.addEventListener('load', () => {
+      resolve(window[name]);
+    });
+    script.addEventListener('error', () => {
+      reject(new Error(`Error loading ${url}`));
+    });
+    script.src = url;
+    document.head.appendChild(script);
+  });
+
+  return window[name];
+}
 
 export default {
   name: 'Play',
   components: {
     'FooterComponent': Footer,
     'HeaderComponent': Header,
+    'RendererPlayer': () => remoteComponent(window.App.$store.getters.getRenderData)
   },
   data() {
     return {
       isConnected: false,
-      renderData: ``
+      loaded: false,
     }
   },
   sockets: {
     connect() {
       // Fired when the socket connects.
       this.isConnected = true;
-      this.$socket.emit('getRenderDataPlayer');
+      this.$socket.emit('getRendererPlayer');
     },
 
     disconnect() {
       this.isConnected = false;
     },
 
-    // Fired when the server sends something on the "messageChannel" channel.
-    chat(data) {
-
-    },
-
     ret(data) {
       console.log(data);
     },
 
-    renderDataPlayer(data) {
-      this.renderData = data;
+    rendererPlayer(data) {
+      // gets/loads the vue framework
+      console.log(this.$socket.io.uri + data);
+      this.$store.commit('setRenderData', this.$socket.io.uri + data);
+      this.loaded = true;
     }
   },
   methods: {

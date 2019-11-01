@@ -9,6 +9,11 @@ api.loadGames();
 app.use(morgan('combined'));
 app.use(cors());
 
+app.get('/game_modules/*', function (req, res) {
+  res.set('Content-Type', 'text/javascript');
+  res.sendFile(req.url.replace('/game_modules', ''), { root: __dirname + '/../game_modules' });
+});
+
 io.on('connection', client => {
   console.log("CLIENT CONNECTED");
   client.on('event', data => {
@@ -48,8 +53,8 @@ io.on('connection', client => {
     }
   });
 
-  client.on('getRenderDataPlayer', data => {
-    client.emit('renderDataPlayer', api.getRenderDataPlayer())
+  client.on('getRendererPlayer', data => {
+    client.emit('rendererPlayer', api.getRendererPlayer())
   });
 })
 

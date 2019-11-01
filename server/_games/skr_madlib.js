@@ -3,15 +3,15 @@ module.exports = {
   author: "brad, seeker",
   description: "hey hey we're the monkies.",
   vars: {
-    prompt: "The fat cat {{isConnected}}."
+    prompt: "The fat cat {{}}."
   },
   init: function () {
     return 5;
   },
-  getRenderDataPlayer: function () {
-    return `<h1> hey </h1>`;
+  getRendererPlayer: function () {
+    return "/game_modules/madlib_player.vue.umd.min.js";
   },
-  getRenderDataAdmin: function () {
+  getRendererAdmin: function () {
     return 5;
   },
   submitUserInput: function (payload) {

@@ -1,3 +1,4 @@
+//const httpVueLoader = require('http-vue-loader');
 var fs = require('fs');
 var files = fs.readdirSync('_games');
 
@@ -27,9 +28,13 @@ module.exports = {
     // TODO: THIS IS DEBUG
     this.currentGame = this.games[0];
   },
-  getRenderDataPlayer: function () {
+  getRendererPlayer: function () {
     if (this.currentGame) {
-      return this.currentGame.getRenderDataPlayer();
+      let a = this.currentGame.getRendererPlayer();
+      console.log(a);
+      //a = httpVueLoader.load(a);
+      //console.log(a);
+      return a;
     }
     return `<p>No game loaded.</p>`
   }

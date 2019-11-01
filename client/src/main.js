@@ -21,7 +21,8 @@ Vue.config.productionTip = false
 const store = new Vuex.Store({
   state: {
     socket: {}, // maybe
-    username: ""
+    username: "",
+    renderData: "",
   },
   mutations: {
     SOCKET_CONNECT(state) {
@@ -32,6 +33,9 @@ const store = new Vuex.Store({
     },
     setUsername(state, payload) {
       state.username = payload;
+    },
+    setRenderData(state, payload) {
+      state.renderData = payload;
     }
   },
   getters: {
@@ -40,6 +44,9 @@ const store = new Vuex.Store({
     },
     getUsername: state => {
       return state.username;
+    },
+    getRenderData: state => {
+      return state.renderData;
     }
   }
 })
