@@ -5,6 +5,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const api = require('./api.js');
 
+api.loadGames();
 app.use(morgan('combined'));
 app.use(cors());
 
@@ -38,14 +39,17 @@ io.on('connection', client => {
   client.on('apiCall', (target = null) => {
     if (target) {
       if (typeof api[target] === "function") {
-        api[target]();
-        client.emit('ret', "called");
+        client.emit('ret', api[target]());
       } else {
         client.emit('ret', api[target]);
       }
     } else {
       client.emit('ret', api);
     }
+  });
+
+  client.on('getRenderDataPlayer', data => {
+    client.emit('renderDataPlayer', api.getRenderDataPlayer())
   });
 })
 

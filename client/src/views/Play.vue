@@ -3,17 +3,8 @@
   <div class="wrapper">
     <HeaderComponent></HeaderComponent>
 
-    <div class="chat">
-      <div class="message"
-        v-for="message in messages"
-        v-bind:key="message.id">
-        <div class="m-user">
-          {{ message.username }}
-        </div>
-        <div class="m-message">
-          {{ message.message }}
-        </div>
-      </div>
+    <div class="game"
+      v-html="renderData">
     </div>
 
 
@@ -39,15 +30,14 @@ export default {
   data() {
     return {
       isConnected: false,
-      userMessage: '',
-      messages: [],
-      messageCount: 0
+      renderData: ``
     }
   },
   sockets: {
     connect() {
       // Fired when the socket connects.
       this.isConnected = true;
+      this.$socket.emit('getRenderDataPlayer');
     },
 
     disconnect() {
@@ -56,25 +46,18 @@ export default {
 
     // Fired when the server sends something on the "messageChannel" channel.
     chat(data) {
-      this.messages.push({
-        'id': this.messageCount++,
-        'username': data[0],
-        'message': data[1]
-      });
-      this.socketMessage = data;
-      this.messageReceived = true;
+
     },
 
     ret(data) {
       console.log(data);
+    },
+
+    renderDataPlayer(data) {
+      this.renderData = data;
     }
   },
   methods: {
-    submitChat() {
-      console.log("chat", this.userMessage);
-      this.$socket.emit('submitChat', this.$store.getters.getUsername, this.userMessage);
-      this.userMessage = '';
-    },
     api(target) {
       this.$socket.emit('apiCall', target);
     }
