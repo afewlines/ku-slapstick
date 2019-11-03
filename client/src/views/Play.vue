@@ -2,12 +2,13 @@
 <div class="app-wrapper">
   <div class="wrapper">
     <HeaderComponent></HeaderComponent>
-    <div v-if="!loaded" class="box">
-      <h3> Waiting for host to start game... </h3>  
+    <div v-if="!loaded"
+      class="box">
+      <h3> Waiting for host to start game... </h3>
     </div>
 
     <div v-if="loaded">
-      <RendererPlayer> </RendererPlayer> <!-- Component for current game -->
+      <RendererPlayer id="renderer"> </RendererPlayer> <!-- GAME COMPONENT -->
     </div>
     <FooterComponent></FooterComponent>
   </div>
@@ -55,11 +56,13 @@ export default {
       loaded: false,
     }
   },
+  beforeMount() {
+    this.$socket.emit('getRendererPlayer');
+  },
   sockets: {
     connect() {
       // Fired when the socket connects.
       this.isConnected = true;
-      this.$socket.emit('getRendererPlayer');
     },
 
     disconnect() {
@@ -75,9 +78,21 @@ export default {
       console.log(this.$socket.io.uri + data);
       this.$store.commit('setRenderData', this.$socket.io.uri + data);
       this.loaded = true;
+      setTimeout(this.requestUpdate, 1000);
+    },
+
+    async update(data) {
+      console.log(data);
+      document.querySelector('#renderer').__vue__.payload = data;
     }
   },
   methods: {
+    requestUpdate() {
+      this.$socket.emit('getUpdate');
+    },
+    submitUserInput(payload) {
+      console.log(payload.target.querySelector("#target")._value);
+    },
     api(target) {
       this.$socket.emit('apiCall', target);
     }

@@ -58,6 +58,10 @@ io.on('connection', client => {
     client.emit('rendererPlayer', api.getRendererPlayer())
   });
 
+  client.on('getUpdate', data => {
+    client.emit('update', api.getPayload())
+  });
+
 })
 
 server.listen(4578);

@@ -6,6 +6,10 @@ module.exports = {
   count: 0,
   games: [],
   currentGame: null,
+  load: function (target) {
+    this.currentGame = this.games[target];
+    this.currentGame.init();
+  },
   getGames: function () {
     return this.games.map(x => x.name)
   },
@@ -26,19 +30,20 @@ module.exports = {
     }
 
     // TODO: THIS IS DEBUG
-    this.currentGame = this.games[1];
+    this.load(0);
   },
   getRendererPlayer: function () {
     if (this.currentGame) {
-      let a = this.currentGame.getRendererPlayer();
-      console.log(a);
-      //a = httpVueLoader.load(a);
-      //console.log(a);
-      return a;
+      return this.currentGame.getRendererPlayer();
     }
-    return `<p>No game loaded.</p>`
+    return null;
   },
-
+  getPayload: function () {
+    if (this.currentGame) {
+      return this.currentGame.getPayload();
+    }
+    return null;
+  },
   init: function () {
     if (this.currentGame) {
       this.currentGame.init(); // begin game
