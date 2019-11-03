@@ -26,7 +26,7 @@ module.exports = {
     }
 
     // TODO: THIS IS DEBUG
-    this.currentGame = this.games[0];
+    this.currentGame = this.games[1];
   },
   getRendererPlayer: function () {
     if (this.currentGame) {
@@ -37,5 +37,11 @@ module.exports = {
       return a;
     }
     return `<p>No game loaded.</p>`
-  }
+  },
+
+  init: function () {
+    if (this.currentGame) {
+      this.currentGame.init(); // begin game
+    }
+  },
 }

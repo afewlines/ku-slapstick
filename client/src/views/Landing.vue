@@ -71,7 +71,8 @@ export default {
     messageChannel(data) {
       this.socketMessage = data;
       this.messageReceived = true;
-    }
+    },
+
   },
   methods: {
     submitUsername(payload = null) {

@@ -2,6 +2,10 @@
 <div class="app-wrapper">
   <div class="wrapper">
     <HeaderComponent></HeaderComponent>
+    <div v-if="!loaded">
+      <p> No Game Loaded </p>
+    </div>
+
     <div v-if="loaded">
       <RendererPlayer> </RendererPlayer>
     </div>

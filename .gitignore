@@ -1,3 +1,5 @@
 */node_modules
 .DS_Store
 .eslintrc.json
+*~
+client/build_components

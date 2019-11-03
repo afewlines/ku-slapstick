@@ -5,6 +5,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const api = require('./api.js');
 
+
 api.loadGames();
 app.use(morgan('combined'));
 app.use(cors());
@@ -56,6 +57,7 @@ io.on('connection', client => {
   client.on('getRendererPlayer', data => {
     client.emit('rendererPlayer', api.getRendererPlayer())
   });
+
 })
 
 server.listen(4578);

@@ -106,6 +106,7 @@ export default {
     },
     submitPlay() {
       this.$socket.emit('submitPlay', "BEGIN GAME");
+      this.$socket.emit('apiCall', 'init');
     }
   },
 }
