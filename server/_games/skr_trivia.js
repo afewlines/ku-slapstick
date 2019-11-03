@@ -40,7 +40,6 @@ function mainLoop (qaList) {
   // todo: display question to player
   var currentAnswers = qaList[0].slice(1,5);
   // todo: display answers to player
-
   
   console.log(currentQuestion);
   console.log(currentAnswers);

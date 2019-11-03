@@ -22,9 +22,6 @@
     </form>
   </div>
     
-
-
-
 </div>
 </template>
 
@@ -41,9 +38,12 @@ export default {
   },
 
   sockets: {
+    getCurrentQuestion(data) {
+      this.currentQuestion = data;
+    },
     getCurrentAnswers(data) {
       this.currentAnswers = data;
-    }    
+    },   
   },
   
   methods: {
