@@ -1,19 +1,29 @@
 <template>
 <div class="box">
-  <p>trivia game</p>
-  <p v-if="x">{{x}}</p>
-  <form id="triviaForm" v-on:submit="submitUserInput">
-  
-  <select v-model="selectedAnswer" required="required">
-    <option disabled value=""> Select answer</option>
-    <option value="0" label="test">x </option>
-    <option value="1">y </option>
-    <option value="2">z </option>
-    <option value="3">a </option>  
-  </select>  
-  <input type="submit" class="button" value="Submit">
+  <div v-if="!currentQuestion">
+    <h2> Trivia questions loading... </h2>
+  </div>
 
-  </form>
+  <div v-if="currentQuestion">
+    <form id="triviaForm" v-on:submit="submitUserInput">
+  
+      <h3> {{ currentQuestion }} </h3>
+
+      <input type ="radio" id="1" v-model="selectedAnswer">
+        <label for="1"> {{ currentAnswers[1] }} </label>
+      <input type ="radio" id="2" v-model="selectedAnswer">
+        <label for="2"> {{ currentAnswers[2] }} </label>
+      <input type ="radio" id="3" v-model="selectedAnswer">
+        <label for="3"> {{ currentAnswers[3] }} </label>
+      <input type ="radio" id="4" v-model="selectedAnswer">
+        <label for="4"> {{ currentAnswers[4] }} </label>
+
+      <input type="submit" class="button" value="Submit">
+    </form>
+  </div>
+    
+
+
 
 </div>
 </template>
@@ -25,20 +35,20 @@ export default {
   data() {
     return {
       selectedAnswer: '',
+      currentQuestion: '',
+      currentAnswers: '',
     }
   },
 
-  components: {
-
-  },
-
   sockets: {
-
+    getCurrentAnswers(data) {
+      this.currentAnswers = data;
+    }    
   },
   
   methods: {
     submitUserInput() {
-      console.log(this.selectedAnswer);
+      //todo: submit selectedAnswer (along with username??)
     },
   },
 }

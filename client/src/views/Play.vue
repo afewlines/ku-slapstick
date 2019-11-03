@@ -2,12 +2,12 @@
 <div class="app-wrapper">
   <div class="wrapper">
     <HeaderComponent></HeaderComponent>
-    <div v-if="!loaded">
-      <p> No Game Loaded </p>
+    <div v-if="!loaded" class="box">
+      <h3> Waiting for host to start game... </h3>  
     </div>
 
     <div v-if="loaded">
-      <RendererPlayer> </RendererPlayer>
+      <RendererPlayer> </RendererPlayer> <!-- Component for current game -->
     </div>
     <FooterComponent></FooterComponent>
   </div>
