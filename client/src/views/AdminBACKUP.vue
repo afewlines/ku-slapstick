@@ -1,14 +1,69 @@
 <template>
 <div class="app-wrapper">
   <div class="wrapper">
-    <HeaderComponent></HeaderComponent>
+    <HeaderComponent>
+    </HeaderComponent>
 
-    <div v-if="loaded">
-      <RendererAdmin id="renderer"> </RendererAdmin> <!-- GAME COMPONENT -->
+    <div class="box"
+      id="landing">
+      <p><b>Game Admin Options</b></p>
     </div>
-    <div v-else
-      class="box">
-      <h3> No Game Loaded </h3>
+
+    <div class="box"
+      id="entrance">
+      <form id="adminForm"
+        v-on:submit.prevent="submitAdmin">
+
+        <!-- Game Selection -->
+        <div> Game Selection:
+          <select v-model="game"
+            required="required">
+
+            <option disabled
+              value=""> Select a game to play</option>
+            <option>Gaming Trivia</option>
+            <option>Other games...</option>
+          </select>
+        </div>
+        <br><br>
+
+        <!-- Timer Selection -->
+        <div> Timer Selection:
+          <select v-model="timer"
+            required="required">
+
+            <option disabled
+              value="">Select the length of each question</option>
+            <option>5 seconds</option>
+            <option>10 seconds</option>
+            <option>15 seconds</option>
+            <option>20 seconds</option>
+          </select>
+        </div>
+
+        <input type="submit"
+          class="button"
+          id="submitAdmin"
+          value="Submit">
+      </form>
+
+      <!-- Ready to begin playing -->
+      <div v-if="messageReceived">{{socketMessage}}
+        <div v-if="!beginGame">
+          Click Play to begin game:
+          <form id="playForm"
+            v-on:submit.prevent="submitPlay">
+            <input type="submit"
+              class="button"
+              id="submitPlay"
+              value="Play">
+          </form>
+        </div>
+        <div v-if="beginGame">
+          <h2>Game Successfully Started</h2>
+        </div>
+      </div>
+
     </div>
 
     <FooterComponent></FooterComponent>
@@ -21,37 +76,11 @@
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 
-function remoteComponent(url) {
-  const name = url.split('/').reverse()[0];
-
-  if (window[name]) return window[name];
-
-  window[name] = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.async = true;
-    script.addEventListener('load', () => {
-      resolve(window[name]);
-    });
-    script.addEventListener('error', () => {
-      reject(new Error(`Error loading ${url}`));
-    });
-    script.src = url + '.umd.min.js';
-    document.head.appendChild(script);
-  });
-
-  return window[name];
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export default {
   name: 'AdminScene',
   components: {
     'FooterComponent': Footer,
     'HeaderComponent': Header,
-    'RendererAdmin': () => remoteComponent(window.App.$store.getters.getRendererAdmin)
   },
   data() {
     return {
@@ -59,13 +88,8 @@ export default {
       timer: '',
       messageReceived: false,
       socketMessage: '',
-      beginGame: false,
-      loaded: false,
-      updating: false
+      beginGame: false
     }
-  },
-  beforeMount() {
-    this.$socket.emit('getRendererAdmin');
   },
   sockets: {
     messageChannel(data) {
@@ -74,35 +98,9 @@ export default {
     },
     beginGame(data) {
       this.beginGame = data;
-    },
-    rendererAdmin(data) {
-      // gets/loads the vue framework
-      this.$store.commit('setRendererAdmin', this.$socket.io.uri + data);
-      this.loaded = true;
-      this.requestUpdate();
-    },
-    async update(data) {
-      console.log(data);
-      if (this.updating || data == null) {
-        return;
-      }
-      this.updating = true;
-
-      var target = document.querySelector('#renderer');
-      while (!(target)) {
-        await sleep(1000);
-        target = document.querySelector('#renderer');
-      }
-
-      target.__vue__.payload = data;
-      this.updating = false
-
     }
   },
   methods: {
-    requestUpdate() {
-      this.$socket.emit('getUpdate');
-    },
     submitAdmin() {
       this.$socket.emit('submitAdmin', this.game, this.timer);
     },

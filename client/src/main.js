@@ -22,7 +22,8 @@ const store = new Vuex.Store({
   state: {
     socket: {}, // maybe
     username: "",
-    renderData: "",
+    rendererPlayer: "",
+    rendererAdmin: "",
   },
   mutations: {
     SOCKET_CONNECT(state) {
@@ -34,8 +35,11 @@ const store = new Vuex.Store({
     setUsername(state, payload) {
       state.username = payload;
     },
-    setRenderData(state, payload) {
-      state.renderData = payload;
+    setRendererPlayer(state, payload) {
+      state.rendererPlayer = payload;
+    },
+    setRendererAdmin(state, payload) {
+      state.rendererAdmin = payload;
     }
   },
   getters: {
@@ -45,8 +49,11 @@ const store = new Vuex.Store({
     getUsername: state => {
       return state.username;
     },
-    getRenderData: state => {
-      return state.renderData;
+    getRendererPlayer: state => {
+      return state.rendererPlayer;
+    },
+    getRendererAdmin: state => {
+      return state.rendererAdmin;
     }
   }
 })

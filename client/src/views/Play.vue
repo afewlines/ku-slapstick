@@ -2,14 +2,15 @@
 <div class="app-wrapper">
   <div class="wrapper">
     <HeaderComponent></HeaderComponent>
-    <div v-if="!loaded"
-      class="box">
-      <h3> Waiting for host to start game... </h3>
-    </div>
 
     <div v-if="loaded">
       <RendererPlayer id="renderer"> </RendererPlayer> <!-- GAME COMPONENT -->
     </div>
+    <div v-else
+      class="box">
+      <h3> Waiting for host to start game... </h3>
+    </div>
+
     <FooterComponent></FooterComponent>
   </div>
 </div>
@@ -23,7 +24,7 @@ import Vue from 'vue'
 import request from 'request'
 
 function remoteComponent(url) {
-  const name = url.split('/').reverse()[0].match(/^(.*?)\.umd/)[1];
+  const name = url.split('/').reverse()[0];
 
   if (window[name]) return window[name];
 
@@ -36,7 +37,7 @@ function remoteComponent(url) {
     script.addEventListener('error', () => {
       reject(new Error(`Error loading ${url}`));
     });
-    script.src = url;
+    script.src = url + '.umd.min.js';
     document.head.appendChild(script);
   });
 
@@ -52,7 +53,7 @@ export default {
   components: {
     'FooterComponent': Footer,
     'HeaderComponent': Header,
-    'RendererPlayer': () => remoteComponent(window.App.$store.getters.getRenderData)
+    'RendererPlayer': () => remoteComponent(window.App.$store.getters.getRendererPlayer)
   },
   data() {
     return {
@@ -84,7 +85,7 @@ export default {
 
     rendererPlayer(data) {
       // gets/loads the vue framework
-      this.$store.commit('setRenderData', this.$socket.io.uri + data);
+      this.$store.commit('setRendererPlayer', this.$socket.io.uri + data);
       this.loaded = true;
       this.requestUpdate();
     },

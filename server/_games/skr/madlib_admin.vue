@@ -4,12 +4,9 @@
 <div>
   <div v-if="typeof(payload.phase) != 'undefined' ">
     <div v-if="payload.phase == 1">
-      <div v-if="payload.target.required.length>0">
-        {{ payload.target.required[0] }}
-        <form v-on:submit.prevent="submit">
-          <input v-model="userInput"
-            id="target">
-        </form>
+      <div v-for="req in payload.target.required"
+        style="color: red;">
+        {{ req }}
       </div>
     </div>
 
@@ -23,15 +20,26 @@
 
 <script>
 export default {
-  name: 'RendererPlayer',
+  name: 'RendererAdmin',
   data() {
     return {
-      payload: {},
-      userInput: "",
-      userSubmission: []
+      payload: {}
     }
   },
   methods: {
+    buildPrompt() {
+      var prompt = this.payload.target.prompt;
+      var input = this.payload.submissions;
+      if (prompt && input) {
+        for (var i = 0; i < input.length; i++) {
+          while (prompt.includes('{' + (i + 1) + '}')) {
+            prompt = prompt.replace('{' + (i + 1) + '}', input[i]);
+          }
+        }
+        return prompt;
+      }
+      return 'Error';
+    },
     submit() {
       this.userSubmission.push(this.userInput);
       this.userInput = "";

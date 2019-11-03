@@ -40,6 +40,12 @@ module.exports = {
     }
     return null;
   },
+  getRendererAdmin: function () {
+    if (this.currentGame) {
+      return this.currentGame.getRendererAdmin();
+    }
+    return null;
+  },
   getPayload: function () {
     if (this.currentGame) {
       return this.currentGame.getPayload();
