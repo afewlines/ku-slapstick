@@ -80,7 +80,7 @@ module.exports = {
   },
                             
   getRendererPlayer: function () {
-    return "/game_modules/trivia_player.vue.umd.min.js";
+    return "/game_modules/trivia_player.umd.min.js";
   },
   getRendererAdmin: function () {
     return 5;
