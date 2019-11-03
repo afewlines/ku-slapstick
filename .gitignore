@@ -2,4 +2,3 @@
 .DS_Store
 .eslintrc.json
 *~
-client/build_components
