@@ -43,6 +43,10 @@ function remoteComponent(url) {
   return window[name];
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export default {
   name: 'Play',
   components: {
@@ -54,9 +58,14 @@ export default {
     return {
       isConnected: false,
       loaded: false,
+      updating: false
     }
   },
   beforeMount() {
+    if (this.$store.getters.getUsername == "") {
+      //this.$router.push('/');
+      //return;
+    }
     this.$socket.emit('getRendererPlayer');
   },
   sockets: {
@@ -75,23 +84,39 @@ export default {
 
     rendererPlayer(data) {
       // gets/loads the vue framework
-      console.log(this.$socket.io.uri + data);
       this.$store.commit('setRenderData', this.$socket.io.uri + data);
       this.loaded = true;
-      setTimeout(this.requestUpdate, 1000);
+      this.requestUpdate();
     },
 
     async update(data) {
       console.log(data);
-      document.querySelector('#renderer').__vue__.payload = data;
+      if (this.updating || data == null) {
+        return;
+      }
+      this.updating = true;
+
+      var target = document.querySelector('#renderer');
+      while (!(target)) {
+        await sleep(1000);
+        target = document.querySelector('#renderer');
+      }
+
+      target.__vue__.payload = data;
+      this.updating = false
+
     }
   },
   methods: {
     requestUpdate() {
       this.$socket.emit('getUpdate');
     },
-    submitUserInput(payload) {
-      console.log(payload.target.querySelector("#target")._value);
+    submitUserInput(data) {
+      console.log(data);
+      this.$socket.emit('submitUserInput', {
+        username: this.$store.getters.getUsername,
+        payload: data
+      })
     },
     api(target) {
       this.$socket.emit('apiCall', target);

@@ -1,3 +1,7 @@
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 prompts = [{
   required: ['adjective', 'noun, plural'],
   prompt: "Why can't my {1} hands hold all these {2}?",
@@ -16,13 +20,17 @@ module.exports = {
   name: "Madlibs",
   author: "brad, seeker",
   description: "hey hey we're the monkies.",
+  sendUpdate: function () { console.log("Update hook not connected."); },
   payload: {
     target: null, //current adlib
     phase: 0, // 0:get user input, 1:display for player to pick, 2:result,
-    userInput: ['one', 'funk', 'wunky', 'donk', 'steve']
+    submissions: []
   },
-  init: function () {
+  init: function (hookUpdate) {
+    this.sendUpdate = hookUpdate;
+    console.log("madlib", hookUpdate);
     this.payload.target = prompts[Math.floor(Math.random() * prompts.length)];
+    //this.sendUpdate();
     return true;
   },
   getRendererPlayer: function () {
@@ -35,6 +43,10 @@ module.exports = {
     return 5;
   },
   submitUserInput: function (payload) {
-    return 'h';
+    console.log(payload)
+    this.submissions.push(payload);
   },
+  gameLogic: async function (sendUpdate) {
+
+  }
 }

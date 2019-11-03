@@ -6,14 +6,16 @@ module.exports = {
   count: 0,
   games: [],
   currentGame: null,
+  hookUpdate: null,
   load: function (target) {
     this.currentGame = this.games[target];
-    this.currentGame.init();
+    this.currentGame.init(this.hookUpdate);
   },
   getGames: function () {
     return this.games.map(x => x.name)
   },
-  loadGames: function () {
+  loadGames: function (hookUpdate) {
+    this.hookUpdate = hookUpdate;
     // itr through files in dir
     for (var file in files) {
       // reuse the var because code golf is a way of life
@@ -44,9 +46,10 @@ module.exports = {
     }
     return null;
   },
-  init: function () {
+  submitUserInput: function (payload) {
     if (this.currentGame) {
-      this.currentGame.init(); // begin game
+      return this.currentGame.submitUserInput(payload);
     }
-  },
+    return null;
+  }
 }
