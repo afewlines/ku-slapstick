@@ -12,7 +12,7 @@
     <div class="box"
       id="entrance">
       <form id="adminForm"
-        v-on:submit="submitAdmin">
+        v-on:submit.prevent="submitAdmin">
 
         <!-- Game Selection -->
         <div> Game Selection:
@@ -52,7 +52,7 @@
         <div v-if="!beginGame">
           Click Play to begin game:
           <form id="playForm"
-            v-on:submit="submitPlay">
+            v-on:submit.prevent="submitPlay">
             <input type="submit"
               class="button"
               id="submitPlay"

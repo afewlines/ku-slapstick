@@ -20,7 +20,7 @@
     <div class="box"
       id="entrance">
       <form id="usernameForm"
-        v-on:submit="submitUsername">
+        v-on:submit.prevent="submitUsername">
         <input v-model="username"
           id="username"
           placeholder="username"
@@ -75,12 +75,7 @@ export default {
 
   },
   methods: {
-    submitUsername(payload = null) {
-      // if fired from event, stop submit event
-      if (payload != null) {
-        payload.preventDefault();
-      }
-
+    submitUsername() {
       // no input fail
       if (this.username.length < 1) {
         return;

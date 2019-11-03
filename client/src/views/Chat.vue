@@ -18,7 +18,7 @@
 
     <div class="userChat">
       <form id="chatForm"
-        v-on:submit="submitChat">
+        v-on:submit.prevent="submitChat">
         <input id="chatInput"
           v-model="userMessage"
           placeholder="Say something!"
