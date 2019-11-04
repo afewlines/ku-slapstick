@@ -56,6 +56,10 @@ io.on('connection', client => {
     client.emit('rendererPlayer', api.getRendererPlayer());
   });
 
+  client.on('getRendererAdmin', data => {
+    client.emit('rendererAdmin', api.getRendererAdmin());
+  });
+
   client.on('getUpdate', data => {
     client.emit('update', api.getPayload());
   });

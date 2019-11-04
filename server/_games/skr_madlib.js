@@ -9,7 +9,7 @@ prompts = [{
   required: ['number > 1', 'adjective', 'event'],
   prompt: "Only {1} {2} days left until {3}!",
 }, {
-  required: ['verb, present tense', 'noun', 'location'],
+  required: ['verb, present tense', 'noun, plural', 'location'],
   prompt: "That's right, I {1} the {2} down in {3}.",
 }, {
   required: ['number', 'number', 'adjective', 'adjective', 'noun'],
@@ -34,17 +34,17 @@ module.exports = {
     return true;
   },
   getRendererPlayer: function () {
-    return "/game_modules/madlib_player.umd.min.js";
+    return "/game_modules/madlib_player";
   },
   getPayload: function () {
     return this.payload;
   },
   getRendererAdmin: function () {
-    return 5;
+    return "/game_modules/madlib_admin";
   },
   submitUserInput: function (payload) {
     console.log(payload)
-    this.submissions.push(payload);
+    this.payload.submissions.push(payload);
   },
   gameLogic: async function (sendUpdate) {
 
