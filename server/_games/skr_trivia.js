@@ -1,7 +1,26 @@
-var fs = require('fs'); 
+var fs = require('fs');
 var parse = require('csv-parse');
 
-var questionCount = 10; // TODO: admin be able to set number of q's
+const questionCount = 5; // TODO: admin be able to set number of q's
+const timerLength = 10000; // TODO: ^
+var qaList = []; // list of all questions and their answers
+var qaAnswers = []; //index of correct answer
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// makes it so the correct answer isn't first and keep tracks of correct answer
+function randomizeAnswerList(qaList) {
+  for(line in qaList) {
+    var correctAns = Math.floor(Math.random() * 4);
+    qaAnswers.push(correctAns);
+    var temp = qaList[line][1][0]; // correct answer
+    qaList[line][1][0] = qaList[line][1][correctAns]; // swap
+    qaList[line][1][correctAns] = temp;
+  }
+} // end randomizeAnswerList
+
 
 // gets a random selection of question indices
 function getRandomQuestions(qList) {
@@ -19,12 +38,14 @@ function getRandomQuestions(qList) {
 // gets random answer indices for each question
 function getRandomAnswers(qNums, aList) {
   var ansNums = [];
-  for(var i=0; ansNums.length < questionCount; i++) { // select answers for each question
+
+  for(var i=0; ansNums.length < questionCount; i++) { // select answers for each q
     var ansIndex = [];
     ansIndex.push(0); // 1st answer is always correct
+
     while(ansIndex.length < 4) { // select answers for one question
       var num = Math.floor(Math.random() * aList[qNums[i]].length);
-      if (!(ansIndex.includes(num))) {
+      if (!(ansIndex.includes(num))) { 
         ansIndex.push(num);
       } 
     } // end while
@@ -33,69 +54,121 @@ function getRandomAnswers(qNums, aList) {
   return ansNums; // all sets of answers
 } // end getRandomAnswers
 
-function mainLoop (qaList) {
-  //for(var i=0; i < qaList.length; i++) { // loop through all questions
+// gets random questions and answers from read csv
+function processCSV(qa) {
+  var questionList = [], answerList = [];
 
-  var currentQuestion = qaList[0][0];
-  // todo: display question to player
-  var currentAnswers = qaList[0].slice(1,5);
-  // todo: display answers to player
-  
-  console.log(currentQuestion);
-  console.log(currentAnswers);
+  for (line in qa) {
+    questionList.push(qa[line][0]);
+  }
+  for (var i=0; i < qa.length; i++) {
+    answerList.push(qa[i][1]);
+  }
+  var q = getRandomQuestions(questionList); // indices of questions
+  var a = getRandomAnswers(q, answerList);  // indices of answers
 
-  // todo: wait 10 seconds for next question
-  //} // end for
-} // end mainLoop
+  for(var i=0; i < questionCount; i++) { // create question/answers list
+    var answers = [];
+    for(var j=0; j < 4; j++) {
+      aText = answerList[q[i]][a[i][j]]; 
+      answers.push(aText);
+    }
+    // array of ['question', [answers for question]]
+    qaList.push([questionList[q[i]], answers]);
+  }
+  //console.log(qaList);
+  console.log("Trivia questions successfully loaded");
+} // end process CSV
 
+// reads entire csv file
+function readCSV () {
+  return new Promise(resolve => {
+    const qa = [];
+    fs.createReadStream("_games/trivia_file.csv").pipe(parse({delimeter: ','}))
+      .on('data', (data) => {
+        qa.push([data[0], data.slice(1, data.length)]);
+      }).on('end', () =>
+            resolve(qa));
+  });
+} // end readCSV
 
 module.exports = {
   name: "Trivia",
-  author: "brad, seeker",
-  description: "hey hey we're the monkies.",
+  author: "kellcj2",
+  description: "are you smarter than a group of drunk college students?",
+  sendUpdate: function () { console.log("Update hook not connected."); },
+
+  payload: {
+    question: null,
+    questionNum: 0,
+    gameEnd: false,
+  },
+  answers: [],
+  playerScores: [],
   
-  init: function () {
-    // process csv file
-    var questionList = [];
-    var answerList = [];
-    var qaList = [];
-    
-    fs.createReadStream("_games/trivia_file.csv")
-      .pipe(parse({delimiter: ','}))
-      .on('data', function(csvrow) {
-        questionList.push(csvrow[0]);
-        answerList.push(csvrow.slice(1, csvrow.length));
-        
-      }).on('end',function() {
-        var q = getRandomQuestions(questionList); // indices of questions
-        var a = getRandomAnswers(q, answerList);  // indices of answers
-        //console.log(q);
-        //console.log(a);
-        
-        for(var i=0; i < 10; i++) { // create question/answers list
-          var answers = [];
-          for(var j=0; j < 4; j++) {
-            aText = answerList[q[i]][a[i][j]]; 
-            answers.push(aText);
-          }
-          // array of ['question', [answers for question]]
-          qaList.push([questionList[q[i]], answers]); 
-        }
-        
-        console.log("Trivia questions successfully loaded");
-        //console.log(qaList);
-        mainLoop(qaList); // begin game
-      });
+  init: function (hookUpdate) {
+    this.sendUpdate = hookUpdate;
+    console.log("trivia", hookUpdate);
+
+    var promise = readCSV();
+    promise.then(qa => (  // when csv file is done being read
+      processCSV(qa),
+      randomizeAnswerList(qaList),
+      this.gameLogic() // begin game :D
+    ));
+
+    return true;
   }, // end init
-                            
+
   getRendererPlayer: function () {
     return "/game_modules/trivia_player.umd.min.js";
   },
-  getRendererAdmin: function () {
+  getPayload: function () {
+    return this.payload;
+  },
+  getRendererAdmin: function () { // doesnt do shit 
     return 5;
   },
-  submitUserInput: function (data) {
-    return 33;
+  submitUserInput: function (payload) {
+    console.log(payload);
+    var newScore = true, correct;
+
+    if(payload.payload == qaAnswers[this.payload.questionNum]) {
+      correct = 1;
+    } else {
+      correct = 0;
+    }
+    console.log("correct(" + correct + ")");
+    
+    for(player in this.playerScores) { // check if player already added
+      if(this.playerScores[player][0] == payload.username) {
+        this.playerScores[player][1] += correct; // score goes up 1
+        newScore = false;
+        //console.log("score: " + this.playerScores[player]);
+        break;
+      }
+    }
+    if(newScore) { // add player to playerScores
+      //console.log("adding new player: " + payload.username);
+      this.playerScores.push([payload.username, correct]);
+    }
+    
   },
 
-}
+  gameLogic: async function (sendUpdate) {
+    for(var i=0; i < questionCount; i++) {
+      this.payload.question = qaList[i][0];
+      this.payload.answers = qaList[i][1];
+      this.sendUpdate();
+      
+      await sleep(timerLength); // TODO: have admin set timer
+      this.payload.questionNum++;
+    } // end for
+    // game is done, send final scores over
+    this.payload.gameEnd = true;
+    this.payload.scores = this.playerScores; 
+    this.sendUpdate();
+  },
+
+
+} // end module.exports

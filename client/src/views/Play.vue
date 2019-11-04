@@ -72,6 +72,9 @@ export default {
     connect() {
       // Fired when the socket connects.
       this.isConnected = true;
+      if(!this.$store.getters.getUsername) {
+        this.$router.push('/');
+      }
     },
 
     disconnect() {
@@ -90,6 +93,7 @@ export default {
     },
 
     async update(data) {
+  
       console.log(data);
       if (this.updating || data == null) {
         return;

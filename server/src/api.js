@@ -32,7 +32,7 @@ module.exports = {
     }
 
     // TODO: THIS IS DEBUG
-    this.load(0);
+    this.load(1);
   },
   getRendererPlayer: function () {
     if (this.currentGame) {

@@ -12,6 +12,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "csv": "^5.1.3",
     "csv-parse": "^4.6.5",
     "express": "^4.17.1",
     "http-vue-loader": "^1.4.1",

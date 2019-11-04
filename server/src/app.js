@@ -61,7 +61,7 @@ io.on('connection', client => {
   });
 
   client.on('submitUserInput', data => {
-    console.log(data);
+    //console.log(data);
     api.submitUserInput(data);
   });
 
