@@ -8,7 +8,14 @@
     </div>
     <div v-else
       class="box">
-      <h3> No Game Loaded </h3>
+      <h3> Choose your game... </h3>
+      <div v-for="(game, index) in games"
+        class="gameSelector"
+        v-on:click="setGame(index)">
+        <div class="gameName">
+          {{ game.name }}
+        </div>
+      </div>
     </div>
 
     <FooterComponent></FooterComponent>
@@ -59,13 +66,14 @@ export default {
       timer: '',
       messageReceived: false,
       socketMessage: '',
+      games: [],
       beginGame: false,
       loaded: false,
       updating: false
     }
   },
   beforeMount() {
-    this.$socket.emit('getRendererAdmin');
+    this.refreshAdmin();
   },
   sockets: {
     messageChannel(data) {
@@ -77,12 +85,17 @@ export default {
     },
     rendererAdmin(data) {
       // gets/loads the vue framework
-      this.$store.commit('setRendererAdmin', this.$socket.io.uri + data);
-      this.loaded = true;
-      this.requestUpdate();
+      if (data) {
+        this.$store.commit('setRendererAdmin', this.$socket.io.uri + data);
+        this.loaded = true;
+        this.requestUpdate();
+      }
     },
     async update(data) {
-      console.log(data);
+      if (!this.loaded) {
+        this.$socket.emit('getRendererAdmin');
+      }
+
       if (this.updating || data == null) {
         return;
       }
@@ -97,24 +110,43 @@ export default {
       target.__vue__.payload = data;
       this.updating = false
 
+    },
+    getGames(data) {
+      this.games = data;
     }
   },
   methods: {
+    refreshAdmin() {
+      this.$socket.emit('getGames');
+      this.$socket.emit('getRendererAdmin');
+    },
+    setGame(payload) {
+      this.$socket.emit('setGame', payload);
+      this.$socket.emit('sendUpdate');
+      this.$socket.emit('getRendererAdmin');
+      this.$socket.emit('getAlive');
+    },
     requestUpdate() {
       this.$socket.emit('getUpdate');
     },
-    submitAdmin() {
-      this.$socket.emit('submitAdmin', this.game, this.timer);
-    },
-    submitPlay() {
-      this.$socket.emit('submitPlay', "BEGIN GAME");
-      this.$socket.emit('apiCall', 'init');
-    }
+    //submitPlay() {
+    //  this.$socket.emit('submitPlay', "BEGIN GAME");
+    //  this.$socket.emit('apiCall', 'init');
+    //}
   },
 }
 </script>
 
 <style scoped>
+h3 {
+  font-weight: 100;
+  font-style: italic;
+}
+
+* {
+  overflow: hidden;
+}
+
 .app-wrapper {
   margin: 0;
   padding: 0;
@@ -126,9 +158,11 @@ export default {
 
 .wrapper {
   width: 100%;
-  max-width: 550px;
-  height: 500px;
-  margin: calc(50vh - 250px) auto auto auto;
+  max-width: 800px;
+  height: 90vh;
+  min-height: 600px;
+  max-height: 1080px;
+  margin: 5vh auto auto auto;
 }
 
 .box {
@@ -136,28 +170,31 @@ export default {
   margin: 1em 0;
   text-align: center;
   padding: 1%;
-  color: #bfbfbf;
 }
 
-.button {
+.gameSelector {
   display: block;
-  width: 5.125em;
+  width: 80%;
   height: 2em;
-  margin: 25px auto 10px;
-  padding: 1px 0;
+  margin: auto;
   border: none;
   background-color: #fff;
   color: #3a3c38;
   text-align: center;
   font-weight: lighter;
-  font-size: 1.125em;
+  font-size: 1em;
   transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out, color 0.5s ease-in-out;
 }
 
-.button:hover {
+.gameName {
+  position: relative;
+  height: 1em;
+  top: calc(50% - 0.5em);
+}
+
+.gameSelector:hover {
   background-color: rgba(255, 255, 255, 0);
   color: #fff;
-  width: 4.625em;
 }
 
 #username {

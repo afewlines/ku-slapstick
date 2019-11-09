@@ -19,11 +19,18 @@ io.on('connection', client => {
     // event template
   });
   client.on('disconnect', () => {
+    api.removePlayer(client.id);
     console.log("CLIENT DISCONNECTED");
   });
   client.on('addPlayer', (username) => {
-    console.log(`Adding player ${username}`);
+    console.log(`Adding player ${client.id} as ${username}`);
     client.emit('messageChannel', 'Player Added');
+  });
+  client.on('getAlive', data => {
+    io.emit('connected');
+  });
+  client.on('alive', data => {
+    api.registerPlayer(client.id, data);
   });
   client.on('submitAdmin', (game, timer) => {
     console.log(`Admin Submit: ${game} | ${timer}`);
@@ -31,7 +38,6 @@ io.on('connection', client => {
   });
 
   client.on('submitPlay', (data) => {
-    console.log(`${data}`);
     client.emit('beginGame', 'true');
     // Do something to begin game
   });
@@ -52,6 +58,14 @@ io.on('connection', client => {
     }
   });
 
+  client.on('getGames', data => {
+    client.emit('getGames', api.games);
+  });
+
+  client.on('setGame', target => {
+    api.load(target);
+  });
+
   client.on('getRendererPlayer', data => {
     client.emit('rendererPlayer', api.getRendererPlayer());
   });
@@ -64,6 +78,10 @@ io.on('connection', client => {
     client.emit('update', api.getPayload());
   });
 
+  client.on('sendUpdate', data => {
+    io.emit('update', api.getPayload());
+  });
+
   client.on('submitUserInput', data => {
     //console.log(data);
     api.submitUserInput(data);
@@ -72,7 +90,6 @@ io.on('connection', client => {
 })
 
 function forceUpdate() {
-  console.log();
   io.sockets.emit('update', api.getPayload());
 }
 

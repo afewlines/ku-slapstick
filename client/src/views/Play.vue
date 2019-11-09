@@ -67,14 +67,22 @@ export default {
       //this.$router.push('/');
       //return;
     }
-    this.$socket.emit('getRendererPlayer');
   },
   sockets: {
     connect() {
       // Fired when the socket connects.
       this.isConnected = true;
-      if(!this.$store.getters.getUsername) {
-        this.$router.push('/');
+      if (!this.$store.getters.getUsername) {
+        //this.$router.push('/');
+      }
+      this.$socket.emit('getRendererAdmin');
+      this.requestUpdate();
+    },
+
+    connected() {
+      let username = this.$store.getters.getUsername;
+      if (username.length > 0) {
+        this.$socket.emit('alive', username)
       }
     },
 
@@ -88,14 +96,18 @@ export default {
 
     rendererPlayer(data) {
       // gets/loads the vue framework
-      this.$store.commit('setRendererPlayer', this.$socket.io.uri + data);
-      this.loaded = true;
-      this.requestUpdate();
+      if (data) {
+        this.$store.commit('setRendererPlayer', this.$socket.io.uri + data);
+        this.loaded = true;
+        this.requestUpdate();
+      }
     },
 
     async update(data) {
-  
-      console.log(data);
+      if (!this.loaded) {
+        this.$socket.emit('getRendererPlayer');
+      }
+
       if (this.updating || data == null) {
         return;
       }
@@ -131,6 +143,10 @@ export default {
 </script>
 
 <style scoped>
+* {
+  overflow: hidden;
+}
+
 .app-wrapper {
   margin: 0;
   padding: 0;

@@ -7,6 +7,7 @@ module.exports = {
   games: [],
   currentGame: null,
   hookUpdate: null,
+  players: {},
   load: function (target) {
     this.currentGame = this.games[target];
     this.currentGame.init(this.hookUpdate);
@@ -30,9 +31,6 @@ module.exports = {
         console.log("Skipping: ", file);
       }
     }
-
-    // TODO: THIS IS DEBUG
-    this.load(1);
   },
   getRendererPlayer: function () {
     if (this.currentGame) {
@@ -57,5 +55,22 @@ module.exports = {
       return this.currentGame.submitUserInput(payload);
     }
     return null;
+  },
+  registerPlayer: function (id, payload) {
+    this.players[payload] = id;
+    this.updatePlayers();
+  },
+  removePlayer: function (payload) {
+    for (var p in this.players) {
+      if (this.players[p] == payload) {
+        delete this.players[p];
+        return;
+      }
+    }
+  },
+  updatePlayers: function () {
+    if (this.currentGame) {
+      this.currentGame.updatePlayers(this.players);
+    }
   }
 }

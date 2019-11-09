@@ -135,7 +135,7 @@ export default {
   margin: 1em 0;
   text-align: center;
   padding: 1%;
-  color: #bfbfbf;
+  color: rgb(191, 191, 191);
 }
 
 .button {
