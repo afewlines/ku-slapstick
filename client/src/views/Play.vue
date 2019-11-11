@@ -64,7 +64,7 @@ export default {
   },
   beforeMount() {
     if (this.$store.getters.getUsername == "") {
-      //this.$router.push('/');
+      //this.$router.push('/'); // make sure username is set
       //return;
     }
   },

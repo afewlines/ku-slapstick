@@ -72,5 +72,11 @@ module.exports = {
     if (this.currentGame) {
       this.currentGame.updatePlayers(this.players);
     }
-  }
+    return null;
+  },
+  submitPlay: function () {
+    if (this.currentGame) {
+      this.currentGame.gameLogic();
+    }
+  },
 }

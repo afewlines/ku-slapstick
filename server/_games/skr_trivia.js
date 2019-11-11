@@ -106,28 +106,28 @@ module.exports = {
   answers: [],
   playerScores: [],
   
-  init: function (hookUpdate) {
+  init: async function (hookUpdate) {
+    console.log("Starting Gaming Trivia", hookUpdate);
     this.sendUpdate = hookUpdate;
-    console.log("trivia", hookUpdate);
 
     var promise = readCSV();
     promise.then(qa => (  // when csv file is done being read
       processCSV(qa),
-      randomizeAnswerList(qaList),
-      this.gameLogic() // begin game :D
+      randomizeAnswerList(qaList)
+      //this.gameLogic() // begin game :D
     ));
 
     return true;
   }, // end init
 
   getRendererPlayer: function () {
-    return "/game_modules/trivia_player.umd.min.js";
+    return "/game_modules/trivia_player";
   },
+  getRendererAdmin: function () {
+    return "/game_modules/trivia_admin";
+  },    
   getPayload: function () {
     return this.payload;
-  },
-  getRendererAdmin: function () { // doesnt do shit 
-    return 5;
   },
   submitUserInput: function (payload) {
     console.log(payload);
@@ -171,4 +171,7 @@ module.exports = {
   },
 
 
+  updatePlayers: function (payload) {
+    
+  },
 } // end module.exports
