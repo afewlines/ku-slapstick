@@ -53,7 +53,9 @@ export default {
       console.log(this.payload.answers);
       for(var i=0; i < this.payload.answers.length; i++) {
         html += "<div>";
-        html += this.payload.answers[i];
+        html += this.payload.answers[i][0];
+        html += " | ";
+        html += this.payload.answers[i][1];
         html += "</div>";
       }
       return html;

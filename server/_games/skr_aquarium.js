@@ -3,7 +3,7 @@ function sleep(ms) {
 }
 
 var questionCount = 2;
-var timerLength = 10000;
+var timerLength = 30000;
 
 words = [
   "blurp",
@@ -101,7 +101,7 @@ module.exports = {
       // select best answer
       this.payload.phase = 2;
       for(player in this.playerData) {
-        this.payload.answers.push(this.playerData[player][1]);
+        this.payload.answers.push(this.playerData[player]);
       }
       this.sendUpdate();
       await sleep(timerLength);
