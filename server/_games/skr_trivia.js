@@ -93,7 +93,7 @@ function readCSV () {
 } // end readCSV
 
 module.exports = {
-  name: "Trivia",
+  name: "Gaming Trivia",
   author: "kellcj2",
   description: "are you smarter than a group of drunk college students?",
   sendUpdate: function () { console.log("Update hook not connected."); },
@@ -138,7 +138,7 @@ module.exports = {
     } else {
       correct = 0;
     }
-    console.log("correct(" + correct + ")");
+    //console.log("correct(" + correct + ")");
     
     for(player in this.playerScores) { // check if player already added
       if(this.playerScores[player][0] == payload.username) {

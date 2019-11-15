@@ -37,7 +37,7 @@ io.on('connection', client => {
     client.emit('messageChannel', 'Setting Successfully Set');
   });
 
-  client.on('submitPlay', (data) => { // begin going through trivia questions
+  client.on('submitPlay', (data) => { // on admin page and game is selected
     api.submitPlay();
   });
 
