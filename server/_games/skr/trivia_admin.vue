@@ -12,31 +12,32 @@
   <br/>
   
   <div :style="getStyle('h1')"> Gaming Trivia </div>
-
-  <div> Timer Length:
-  <select v-model="timerLength">
-    <option value="5"> 5 seconds </option>
-    <option default value="10"> 10 seconds </option>
-    <option value="15"> 15 seconds </option>
-    <option value="20"> 20 seconds </option>
-  </select>
-  </div>
-
-  <div> Number of Questions:
-  <select v-model="numQuestions">
-    <option value="3"> 3 questions </option>
-    <option default value="5"> 5 questions </option>
-    <option value="10"> 10 questions </option>
-    <option value="15"> 15 questions </option>
-  </select>
-  </div>
-  <br/>
-
   <div v-if="!this.gameStarted">
-    <form v-on:submit.prevent="submitPlay">
-      <button> Begin Game </button>
-    </form>
+    <div> Timer Length:
+    <select v-model="timerLength">
+      <option value="5"> 5 seconds </option>
+      <option default value="10"> 10 seconds </option>
+      <option value="15"> 15 seconds </option>
+      <option value="20"> 20 seconds </option>
+    </select>
+    </div>
+
+    <div> Number of Questions:
+    <select v-model="numQuestions">
+      <option value="3"> 3 questions </option>
+      <option default value="5"> 5 questions </option>
+      <option value="10"> 10 questions </option>
+      <option value="15"> 15 questions </option>
+    </select>
+    </div>
+    <br/>
+
+
+      <form v-on:submit.prevent="submitPlay">
+        <button> Begin Game </button>
+      </form>
   </div>
+
   <div v-else>
     <h1 :style="getStyle('h1')"> Game in progress </h1> 
   </div>

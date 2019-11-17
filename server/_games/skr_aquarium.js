@@ -2,8 +2,8 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-var questionCount = 2;
-var timerLength = 30000;
+var questionCount = 5;
+var timerLength = 10000;
 
 words = [
   "blurp",
@@ -24,11 +24,8 @@ function getRandomWords() {
   var index = [];
   while(index.length < questionCount) {
     var num = Math.floor(Math.random() * words.length);
-    if(!(index.includes(num))) { // no repeats
-      index.push(num);
-    }
+    if(!(index.includes(num))) index.push(num);
   } // end while
-
   var w = [];
   for(var i=0; i < questionCount; i++) {
     w.push(words[index[i]]);
@@ -39,7 +36,7 @@ function getRandomWords() {
 module.exports = {
   name: "Aquarium",
   author: "kellcj2",
-  description: "fake word definitions (aka definitely not dictionarium",
+  description: "fake word definitions (aka definitely not dictionarium)",
   sendUpdate: function () { console.log("Update hook not connected."); },
 
   payload: {
@@ -48,6 +45,7 @@ module.exports = {
     gameEnd: false,
     answers: [],
     scores: [],
+    winner: null,
   },
   
   playerData: [], // contains username, current answer, score
@@ -77,22 +75,32 @@ module.exports = {
       for(player in this.playerData) { // check if player already added
         if(this.playerData[player][0] == payload.username) { 
           newAnswer = false;
-          this.playerData[player][1] = payload.payload;
+          this.playerData[player][1] = payload.payload; // player's answer
           break;
         }
       }
-
-      if(newAnswer) {
+      if(newAnswer) // add new player
         this.playerData.push([payload.username, payload.payload, 0]);
-      }
-    } else {
-      // select best answer
 
+
+    } else if(this.payload.phase == 2) { // select best answer
+      //console.log("Selected answer");
+      //console.log(payload.payload);
+      for(player in this.playerData) {
+        if(this.playerData[player][1] == payload.payload)
+          this.playerData[player][2] += 1; // increment score
+      }
+      
     }
     //console.log(this.playerData);
   },
 
-  gameLogic: async function (sendUpdate) {
+  gameLogic: async function (data) {
+    if(data != null) {
+      timerLength = Number(data[0]) * 1000;
+      questionCount = Number(data[1]);
+    }
+    
     for(var i=0; i < questionCount; i++) {
       this.payload.currentWord = gameWords[i];
       this.sendUpdate();
@@ -101,7 +109,7 @@ module.exports = {
       // select best answer
       this.payload.phase = 2;
       for(player in this.playerData) {
-        this.payload.answers.push(this.playerData[player]);
+        this.payload.answers.push(this.playerData[player][1]);
       }
       this.sendUpdate();
       await sleep(timerLength);
@@ -111,8 +119,10 @@ module.exports = {
 
     // game is over, send scores
     this.payload.gameEnd = true;
+    
     for(players in this.playerData) {
-      this.payload.scores.push(this.playerData[players][players[1], players[2]]);
+      var data = this.playerData[players];
+      this.payload.scores.push(data[0], data[2]);
     }
     this.sendUpdate();
   },

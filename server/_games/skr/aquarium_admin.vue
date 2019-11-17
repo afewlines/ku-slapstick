@@ -1,3 +1,5 @@
+
+
 <template>
 <div :style="getStyle('box')">
   <div v-if="!this.gameStarted">
@@ -8,12 +10,32 @@
   </div>
   <br/>
 
-  <h1 :style="getStyle('h1')"> Aquarium </h1>
+  <div :style="getStyle('h1')"> Aquarium </div>
   <div v-if="!this.gameStarted">
+    <div> Timer Length:
+    <select v-model="timerLength">
+      <option value="5"> 5 seconds </option>
+      <option default value="10"> 10 seconds </option>
+      <option value="15"> 15 seconds </option>
+      <option value="20"> 20 seconds </option>
+    </select>
+    </div>
+
+    <div> Number of Words:
+    <select v-model="numWords">
+      <option value="3"> 3 words </option>
+      <option default value="5"> 5 words </option>
+      <option value="10"> 10 words </option>
+      <option value="15"> 15 words </option>
+    </select>
+    </div>
+    <br/>
+
     <button v-on:click="submit" :style="getStyle('form')">
       Click to start the game
     </button>
   </div>
+  
   <div v-else>
     <h1 :style="getStyle('h1')"> Game in progress </h1>
   </div>
@@ -28,14 +50,15 @@ export default {
     return {
       payload: {},
       gameStarted: false,
+      timerLength: 10,
+      numWords: 5,
     }
   },
 
   methods: {
     submit() {
       this.gameStarted = true;
-      this.$socket.emit('submitPlay', "Starting Aquarium");
-      this.$socket.emit('apiCall', 'gameLogic');
+      this.$socket.emit('submitPlay', [this.timerLength, this.numWords]);
     },
     backButton() {
       this.$socket.emit('clearCurrentGame');

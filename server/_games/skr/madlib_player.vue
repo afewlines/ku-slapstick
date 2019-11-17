@@ -4,7 +4,7 @@
 <div>
   <link href="https://fonts.googleapis.com/css?family=Bowlby+One+SC|Josefin+Sans&display=swap"
     rel="stylesheet">
-
+  
   <div v-if="typeof(payload.phase) != 'undefined' "
     :style="getStyle('box')">
     <div v-if="payload.phase == 0">

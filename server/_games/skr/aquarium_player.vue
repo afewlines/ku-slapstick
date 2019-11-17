@@ -12,8 +12,9 @@
   </div>
 
   <!-- Playing the game -->
-  <div v-if="!payload.gameEnd">
+  <div v-if="!payload.gameEnd"> 
     <div v-if="payload.phase == 1">
+      {{ phaseOne() }}
       <div v-if="payload.currentWord">
         <h1 :style="getStyle('h1')"> {{ payload.currentWord }} </h1>
         <input v-model="answer" :style="getStyle('input')">
@@ -21,17 +22,33 @@
           Submit
         </button>
       </div>
-    </div>
+    </div> <!-- end phase 1 -->
 
     <div v-if="payload.phase == 2">
-      <h1 :style="getStyle('h1')"> Select the best definition </h1>
-      <div v-html="buildSelectScreen()"> </div>
-    </div>
+      <div v-if="this.selected == null">
+        <div :style="getStyle('h1')"> 
+          Select the best definition for {{ payload.currentWord }}
+        </div>
+
+        <div v-for="(ans, index) in payload.answers" :key="index"
+          v-on:click="submitSelectedAnswer(ans)">
+          <div :style="getStyle('h2')"> {{ ans }} </div>
+        </div>
+      </div>
+
+      <div v-else>
+        <div :style="getStyle('h1')"> 
+          You selected {{ this.selected }} 
+        </div>
+      </div>
+    </div> <!-- end phase 2 -->
+  
   </div>
 
   <!-- Game End Screen -->
   <div v-if="payload.gameEnd">
-    <div v-html="buildScoreScreen()"> </div>
+    <div :style="getStyle('h1')"> Game Over! </div>
+    <div v-html="buildScoreScreen(payload.scores)"> </div>
   </div>
 
 </div>
@@ -46,30 +63,36 @@ export default {
       payload: {},
       active: false,
       answer: "",
+      selected: null,
     }
   },
 
   methods: {
-    buildSelectScreen() {
-      var html = "";
-      console.log(this.payload.answers);
-      for(var i=0; i < this.payload.answers.length; i++) {
-        html += "<div>";
-        html += this.payload.answers[i][0];
-        html += " | ";
-        html += this.payload.answers[i][1];
-        html += "</div>";
-      }
+    buildScoreScreen(target) {
+      var style = this.getStyle('h2');
+      var html = "<center style=\"float:left;";
+      html += style;
+      html += "\">";
+      html += target[0];
+      html += "  | Score:";
+      html += target[1];
+      html += "</center>";
       return html;
     },
-    
-    buildScoreScreen() {
-      
+
+    phaseOne() {
+      this.selected = null;
+      return null;
     },
   
     submitUserInput() {
       this.$parent.submitUserInput(this.answer);
       this.answer = "";
+    },
+
+    submitSelectedAnswer(target) {
+      this.$parent.submitUserInput(target);
+      this.selected = target;
     },
   
     getStyle(target) {
@@ -108,6 +131,18 @@ export default {
             'border-bottom: 2px solid black;',
           ]
           break;
+        case 'h2':
+          payload = [
+            'width: 100%;',
+            'margin: 0.25em auto;',
+            'padding: 0.125em 0;',
+            'font-weight: 100;',
+            'font-style: italic;',
+            'font-size: 1.1em;',
+            'color: white;',
+          ]
+          break;
+
           case 'score':
           payload = [
             'align=center;',
