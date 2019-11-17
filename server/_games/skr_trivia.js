@@ -105,6 +105,9 @@ module.exports = {
   init: async function (hookUpdate) {
     console.log("Starting Gaming Trivia", hookUpdate);
     this.sendUpdate = hookUpdate;
+    this.payload.gameEnd = false;
+    this.payload.question = false;
+    this.payload.questionNum = 0;
 
     return true;
   }, // end init

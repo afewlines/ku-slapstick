@@ -4,6 +4,11 @@
 
   <div v-if="!payload.currentWord">
     <h1 :style="getStyle('h1')"> Aquarium loading... </h1>
+    <div :style="getStyle('info')">
+      Everyone comes up with a definition for a made-up word. Then,
+      everyone votes on who came up with the best definition.
+      Whoever has the most points wins!.
+    </div>
   </div>
 
   <!-- Playing the game -->
@@ -15,9 +20,6 @@
         <button v-on:click="submitUserInput" :style="getStyle('form')">
           Submit
         </button>
-      </div>
-      <div v-else>
-        Waiting for next word
       </div>
     </div>
 
@@ -73,6 +75,16 @@ export default {
     getStyle(target) {
       let payload = []
       switch (target) {
+        case 'info':
+          payload = [
+            "font-family: 'Josefin Sans', sans-serif;",
+            'height: auto;',
+            'padding: 3em 0 2em;',
+            'font-size: 1.2em;',
+            'margin: 0 auto;',
+            'color: rgb(191, 191, 191);',
+          ]
+          break;
         case 'box':
           payload = [
             'width: 100%;',

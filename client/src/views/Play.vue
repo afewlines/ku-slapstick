@@ -122,8 +122,14 @@ export default {
       target.__vue__.payload = data;
       this.updating = false
 
-    }
+    },
+
+    reloadPage() {
+      console.log("reloading");
+      location.reload();
+    },
   },
+  
   methods: {
     requestUpdate() {
       this.$socket.emit('getUpdate');

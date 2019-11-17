@@ -3,7 +3,12 @@
 <div :style="getStyle('box')">
 
   <div v-if="!payload.question || !payload.answers">
-    <h1 :style="getStyle('h1')"> Trivia questions loading... </h1>
+    <div :style="getStyle('h1')"> Gaming Trivia </div>
+    <div :style="getStyle('info')">
+      Answer a series of question about video games. Earn 1
+      point for each correct question. Whoever has the
+      highest score wins!
+    </div>
   </div>
 
   <!-- Playing the game -->
@@ -83,6 +88,16 @@ export default {
         case 'rad':
           payload = [
             'margin:10px;',
+          ]
+          break;
+        case 'info':
+          payload = [
+            "font-family: 'Josefin Sans', sans-serif;",
+            'height: auto;',
+            'padding: 3em 0 2em;',
+            'font-size: 1.2em;',
+            'margin: 0 auto;',
+            'color: rgb(191, 191, 191);',
           ]
           break;
         case 'lab':

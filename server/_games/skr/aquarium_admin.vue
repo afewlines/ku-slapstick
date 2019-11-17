@@ -1,5 +1,12 @@
 <template>
 <div :style="getStyle('box')">
+  <div v-if="!this.gameStarted">
+    <form v-on:submit.prevent="backButton"
+      :style="getStyle('back')">
+      <button> Go Back </button>
+    </form>
+  </div>
+  <br/>
 
   <h1 :style="getStyle('h1')"> Aquarium </h1>
   <div v-if="!this.gameStarted">
@@ -30,6 +37,11 @@ export default {
       this.$socket.emit('submitPlay', "Starting Aquarium");
       this.$socket.emit('apiCall', 'gameLogic');
     },
+    backButton() {
+      this.$socket.emit('clearCurrentGame');
+      location.reload();
+    },
+
     getStyle(target) {
       let payload = []
       switch (target) {
@@ -88,6 +100,12 @@ export default {
             'font-size: 1.25em;',
             'text-align: left;',
             'color: rgb(171, 167, 167);',
+          ]
+          break;
+        case 'back':
+          payload = [
+            'text-align: left;',
+            'float: left;',
           ]
           break;
       }

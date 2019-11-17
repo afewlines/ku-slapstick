@@ -1,9 +1,17 @@
 
 
 <template>
+
 <div :style="getStyle('box')">
+  <div v-if="!this.gameStarted">
+    <form v-on:submit.prevent="backButton"
+      :style="getStyle('back')">
+      <button> Go Back </button>
+    </form>
+  </div>
+  <br/>
   
-  <h1 :style="getStyle('h1')"> Gaming Trivia </h1>
+  <div :style="getStyle('h1')"> Gaming Trivia </div>
 
   <div> Timer Length:
   <select v-model="timerLength">
@@ -22,12 +30,17 @@
     <option value="15"> 15 questions </option>
   </select>
   </div>
-
   <br/>
-  <form v-on:submit.prevent="submitPlay">
-    <button> Begin Game </button>
-  </form>
-    
+
+  <div v-if="!this.gameStarted">
+    <form v-on:submit.prevent="submitPlay">
+      <button> Begin Game </button>
+    </form>
+  </div>
+  <div v-else>
+    <h1 :style="getStyle('h1')"> Game in progress </h1> 
+  </div>
+  
 </div>
 </template>
 
@@ -39,12 +52,19 @@ export default {
       payload: {},
       timerLength: 10,
       numQuestions: 5,
+      gameStarted: false,
     }
   },
   methods: {
     submitPlay() {
       this.$socket.emit('submitPlay', [this.timerLength, this.numQuestions]);
+      this.gameStarted = true;
     },
+    backButton() {
+      this.$socket.emit('clearCurrentGame');
+      location.reload();
+    },
+
     getStyle(target) {
       let payload = []
       switch (target) {
@@ -84,6 +104,12 @@ export default {
             'font-size: 1.25em;',
             'text-align: left;',
             'color: rgb(171, 167, 167);',
+          ]
+          break;
+        case 'back':
+          payload = [
+            'text-align: left;',
+            'float: left;',
           ]
           break;
       }

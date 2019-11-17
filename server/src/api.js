@@ -32,6 +32,9 @@ module.exports = {
       }
     }
   },
+  clearCurrentGame: function () {
+    this.currentGame = null;
+  },
   getRendererPlayer: function () {
     if (this.currentGame) {
       return this.currentGame.getRendererPlayer();

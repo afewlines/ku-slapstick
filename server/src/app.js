@@ -41,6 +41,11 @@ io.on('connection', client => {
     api.submitPlay(data);
   });
 
+  client.on('clearCurrentGame', () => { // on admin page and game is selected
+    api.clearCurrentGame();
+    io.emit('reloadPage');
+  });
+  
   client.on('submitChat', (user, msg) => {
     io.emit('chat', [user, msg]);
   });
