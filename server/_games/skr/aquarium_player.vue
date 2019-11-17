@@ -17,13 +17,21 @@
       {{ phaseOne() }}
       <div v-if="payload.currentWord">
         <h1 :style="getStyle('h1')"> {{ payload.currentWord }} </h1>
-        <input v-model="answer" :style="getStyle('input')">
-        <button v-on:click="submitUserInput" :style="getStyle('form')">
-          Submit
-        </button>
+
+        <div v-if="this.submitted == null"> <!-- not yet submitted -->
+          <form v-on:submit.prevent="submitUserInput" 
+            :style="getStyle('input')">
+          <input v-model="answer" :style="getStyle('input')">
+          </form>
+        </div>
+
+        <div v-else :style="getStyle('h2')"> <!-- submitted -->
+            Your definition: {{ this.submitted }}
+        </div>
       </div>
     </div> <!-- end phase 1 -->
 
+    <!-- Voting on best answer -->
     <div v-if="payload.phase == 2">
       <div v-if="this.selected == null">
         <div :style="getStyle('h1')"> 
@@ -46,7 +54,7 @@
   </div>
 
   <!-- Game End Screen -->
-  <div v-if="payload.gameEnd">
+  <div v-if="payload.gameEnd == true">
     <div :style="getStyle('h1')"> Game Over! </div>
     <div v-html="buildScoreScreen(payload.scores)"> </div>
   </div>
@@ -64,6 +72,7 @@ export default {
       active: false,
       answer: "",
       selected: null,
+      submitted: null,
     }
   },
 
@@ -74,7 +83,7 @@ export default {
       html += style;
       html += "\">";
       html += target[0];
-      html += "  | Score:";
+      html += "  | Score: ";
       html += target[1];
       html += "</center>";
       return html;
@@ -87,12 +96,14 @@ export default {
   
     submitUserInput() {
       this.$parent.submitUserInput(this.answer);
+      this.submitted = this.answer;
       this.answer = "";
     },
 
     submitSelectedAnswer(target) {
       this.$parent.submitUserInput(target);
       this.selected = target;
+      this.submitted = null;
     },
   
     getStyle(target) {
@@ -137,17 +148,11 @@ export default {
             'margin: 0.25em auto;',
             'padding: 0.125em 0;',
             'font-weight: 100;',
-            'font-style: italic;',
-            'font-size: 1.1em;',
+            'font-size: 1.3em;',
             'color: white;',
           ]
           break;
 
-          case 'score':
-          payload = [
-            'align=center;',
-          ]
-          break;
       }
       return payload.join(' ');
     }

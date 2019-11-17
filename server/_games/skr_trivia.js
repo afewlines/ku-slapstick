@@ -98,6 +98,7 @@ module.exports = {
     question: null,
     questionNum: 0,
     gameEnd: false,
+    submitted: false,
   },
   answers: [],
   playerScores: [],
@@ -166,6 +167,7 @@ module.exports = {
     for(var i=0; i < questionCount; i++) {
       this.payload.question = qaList[i][0];
       this.payload.answers = qaList[i][1];
+      this.payload.submitted = false;
       this.sendUpdate();
       
       await sleep(timerLength);

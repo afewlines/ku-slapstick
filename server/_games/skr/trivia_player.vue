@@ -13,35 +13,29 @@
 
   <!-- Playing the game -->
   <div v-if="!payload.gameEnd">
-  <div v-if="payload.question && payload.answers">
-    <form id="triviaForm" v-on:submit="submitUserInput">
-  
+    <div v-if="payload.question && payload.answers">
       <h1 :style="getStyle('h1')"> {{ payload.question }} </h1>
 
-      <input type ="radio" v-model="selectedAnswer" value="0" :style="getStyle('rad')">
-      <label for="0" :style="getStyle('lab')"> {{ payload.answers[0] }} </label>
-      <br />
-      <input type ="radio" v-model="selectedAnswer" value="1" :style="getStyle('rad')">
-      <label for="1" :style="getStyle('lab')"> {{ payload.answers[1] }} </label>
-      <br />
-      <input type ="radio" v-model="selectedAnswer" value="2" :style="getStyle('rad')">
-      <label for="2" :style="getStyle('lab')"> {{ payload.answers[2] }} </label>
-      <br />
-      <input type ="radio" v-model="selectedAnswer" value="3" :style="getStyle('rad')">
-      <label for="3" :style="getStyle('lab')"> {{ payload.answers[3] }} </label>
-      <br /><br />
-  
-      <input type="submit" class="button" value="Submit">
+      <div v-if="!payload.submitted">
+        <div v-for="(question, index) in payload.answers" :key="index"
+          v-on:click="submitUserInput(index, question)">
+          <div :style="getStyle('h2')"> {{ question }} </div>
+        </div>
+      </div>
 
-    </form>
-  </div>
+      <div v-else :style="getStyle('h2')">
+        Your answer: {{ this.answer }}
+      </div>        
+
+    </div>
   </div>
 
   <!-- Game End Screen -->
-  <div v-if="payload.gameEnd">
-    <h1 :style="getStyle('h1')"> Game Over </h1>
+  <div v-if="payload.gameEnd" :style="getStyle('h2')">
+    <div :style="getStyle('h1')"> Game Over </div>
     <div v-html="buildScoreScreen()"> </div>
   </div>
+
 </div>
 </template>
 
@@ -53,18 +47,17 @@ export default {
     return {
       payload: {},
       active: false,
-      selectedAnswer: "",
+      answer: null,
     }
   },
 
   methods: {
     buildScoreScreen() {
-      if(!this.payload.gameEnd) {
+      if(!this.payload.gameEnd)
         return 0;
-      }
-      var scoreStyle = this.getStyle('score');
-      var html = "<table align='center'><tr><th>Player Name</th><th>Score</th>";
 
+      var html = "<table align='center' cellspacing='10'>\
+                  <tr><th>Player Name</th><th>Score</th>";
       for(var i=0; i < this.payload.scores.length; i++) {
         html += "<tr><td>";
         html += this.payload.scores[i][0];
@@ -76,10 +69,11 @@ export default {
       return html;
     },
   
-    submitUserInput() {
-      console.log("submission" + this.selectedAnswer);
-      this.$parent.submitUserInput(this.selectedAnswer);
-      this.selectedAnswer = "";
+    submitUserInput(index, answer) {
+      console.log("submission" + index);
+      this.$parent.submitUserInput(index);
+      this.payload.submitted = true;
+      this.answer = answer;
     },
   
     getStyle(target) {
@@ -137,6 +131,17 @@ export default {
             'align=center;',
           ]
           break;
+        case 'h2':
+          payload = [
+            'width: 100%;',
+            'margin: 0.25em auto;',
+            'padding: 0.125em 0;',
+            'font-weight: 100;',
+            'font-size: 1.3em;',
+            'color: white;',
+          ]
+          break;
+
       }
       return payload.join(' ');
     }
