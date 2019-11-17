@@ -2,14 +2,32 @@
 
 <template>
 <div :style="getStyle('box')">
-
+  
   <h1 :style="getStyle('h1')"> Gaming Trivia </h1>
 
-  <form v-on:submit="submitPlay">
-    <!-- TODO: options for question num and length -->
-    <input type="submit" class="button" value="Begin Game">
+  <div> Timer Length:
+  <select v-model="timerLength">
+    <option value="5"> 5 seconds </option>
+    <option default value="10"> 10 seconds </option>
+    <option value="15"> 15 seconds </option>
+    <option value="20"> 20 seconds </option>
+  </select>
+  </div>
+
+  <div> Number of Questions:
+  <select v-model="numQuestions">
+    <option value="3"> 3 questions </option>
+    <option default value="5"> 5 questions </option>
+    <option value="10"> 10 questions </option>
+    <option value="15"> 15 questions </option>
+  </select>
+  </div>
+
+  <br/>
+  <form v-on:submit.prevent="submitPlay">
+    <button> Begin Game </button>
   </form>
-  
+    
 </div>
 </template>
 
@@ -18,13 +36,14 @@ export default {
   name: 'RendererAdmin',
   data() {
     return {
-      payload: {}
+      payload: {},
+      timerLength: 10,
+      numQuestions: 5,
     }
   },
   methods: {
     submitPlay() {
-      this.$socket.emit('submitPlay', "Starting trivia game");
-      this.$socket.emit('apiCall', 'gameLogic');
+      this.$socket.emit('submitPlay', [this.timerLength, this.numQuestions]);
     },
     getStyle(target) {
       let payload = []
@@ -47,6 +66,23 @@ export default {
             'padding: 0.125em 0;',
             'font-weight: 100;',
             'font-size: 1.5em;',
+            'color: rgb(171, 167, 167);',
+          ]
+          break;
+        case 'form':
+          payload = [
+            'padding: 0 0 2em;',
+          ]
+          break;
+        case 'begin':
+          payload = [
+            'width: 80%;',
+            'margin: 0 auto 0.5em;',
+            "font-family: 'Josefin Sans', sans-serif;",
+            'font-weight: 100;',
+            'font-style: italic;',
+            'font-size: 1.25em;',
+            'text-align: left;',
             'color: rgb(171, 167, 167);',
           ]
           break;

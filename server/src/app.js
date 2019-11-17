@@ -38,7 +38,7 @@ io.on('connection', client => {
   });
 
   client.on('submitPlay', (data) => { // on admin page and game is selected
-    api.submitPlay();
+    api.submitPlay(data);
   });
 
   client.on('submitChat', (user, msg) => {

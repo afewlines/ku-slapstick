@@ -1,8 +1,9 @@
 var fs = require('fs');
 var parse = require('csv-parse');
 
-const questionCount = 5; // TODO: admin be able to set number of q's
-const timerLength = 10000; // TODO: ^
+var questionCount = 5; // default
+var timerLength = 10000; // default
+
 var qaList = []; // list of all questions and their answers
 var qaAnswers = []; //index of correct answer
 
@@ -10,7 +11,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// makes it so the correct answer isn't first and keep tracks of correct answer
+// randomize location and keep track of correct answer
 function randomizeAnswerList(qaList) {
   for(line in qaList) {
     var correctAns = Math.floor(Math.random() * 4);
@@ -27,9 +28,7 @@ function getRandomQuestions(qList) {
   var questionNums = [];
   while(questionNums.length < questionCount) {
     var num = Math.floor(Math.random() * qList.length);
-    if (!(questionNums.includes(num))) { // ensures no repeats
-      questionNums.push(num);
-    }
+    if (!(questionNums.includes(num))) questionNums.push(num);
   } // end while
   
   return questionNums;
@@ -38,17 +37,14 @@ function getRandomQuestions(qList) {
 // gets random answer indices for each question
 function getRandomAnswers(qNums, aList) {
   var ansNums = [];
-
-  for(var i=0; ansNums.length < questionCount; i++) { // select answers for each q
+  for(var i=0; ansNums.length < questionCount; i++) {
     var ansIndex = [];
     ansIndex.push(0); // 1st answer is always correct
 
     while(ansIndex.length < 4) { // select answers for one question
       var num = Math.floor(Math.random() * aList[qNums[i]].length);
-      if (!(ansIndex.includes(num))) { 
-        ansIndex.push(num);
-      } 
-    } // end while
+      if (!(ansIndex.includes(num))) ansIndex.push(num); 
+    } 
     ansNums.push(ansIndex); // set of answers for 1 question
   } // end for
   return ansNums; // all sets of answers
@@ -76,7 +72,7 @@ function processCSV(qa) {
     // array of ['question', [answers for question]]
     qaList.push([questionList[q[i]], answers]);
   }
-  //console.log(qaList);
+
   console.log("Trivia questions successfully loaded");
 } // end process CSV
 
@@ -109,13 +105,6 @@ module.exports = {
   init: async function (hookUpdate) {
     console.log("Starting Gaming Trivia", hookUpdate);
     this.sendUpdate = hookUpdate;
-
-    var promise = readCSV();
-    promise.then(qa => (  // when csv file is done being read
-      processCSV(qa),
-      randomizeAnswerList(qaList)
-      //this.gameLogic() // begin game :D
-    ));
 
     return true;
   }, // end init
@@ -155,13 +144,28 @@ module.exports = {
     
   },
 
-  gameLogic: async function (sendUpdate) {
+  gameLogic: async function (data) {
+    console.log("Beginning Trivia Game");
+    if(data != null) {
+      timerLength = Number(data[0]) * 1000; // ms
+      questionCount = Number(data[1]);
+    }
+
+    var promise = readCSV();
+    promise.then(qa => (  // when csv file is done being read
+      processCSV(qa),
+      randomizeAnswerList(qaList),
+      this.beginGame()
+    ));
+  },
+
+  beginGame: async function () {
     for(var i=0; i < questionCount; i++) {
       this.payload.question = qaList[i][0];
       this.payload.answers = qaList[i][1];
       this.sendUpdate();
       
-      await sleep(timerLength); // TODO: have admin set timer
+      await sleep(timerLength);
       this.payload.questionNum++;
     } // end for
     // game is done, send final scores over
@@ -170,7 +174,7 @@ module.exports = {
     this.sendUpdate();
   },
 
-
+  
   updatePlayers: function (payload) {
     
   },

@@ -74,9 +74,9 @@ module.exports = {
     }
     return null;
   },
-  submitPlay: function () {
+  submitPlay: function (data = null) {
     if (this.currentGame) {
-      this.currentGame.gameLogic();
+      this.currentGame.gameLogic(data);
     }
   },
 }
