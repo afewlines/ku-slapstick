@@ -2,6 +2,7 @@
 
 <template>
 <div :style="getStyle('box')">
+  <!-- TODO: fix
   <div v-if="!this.gameStarted">
     <form v-on:submit.prevent="backButton"
       :style="getStyle('back')">
@@ -9,7 +10,8 @@
     </form>
   </div>
   <br/>
-
+  -->
+  
   <div :style="getStyle('h1')"> Aquarium </div>
   <div v-if="!this.gameStarted">
     <div> Timer Length:

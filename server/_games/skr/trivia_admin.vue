@@ -3,6 +3,7 @@
 <template>
 
 <div :style="getStyle('box')">
+  <!-- TODO: fix
   <div v-if="!this.gameStarted">
     <form v-on:submit.prevent="backButton"
       :style="getStyle('back')">
@@ -10,6 +11,7 @@
     </form>
   </div>
   <br/>
+  -->
   
   <div :style="getStyle('h1')"> Gaming Trivia </div>
   <div v-if="!this.gameStarted">
