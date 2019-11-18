@@ -50,9 +50,13 @@ export default {
   methods: {
     toggleSwitch() {
       if (this.$refs.container.classList.contains('activated')) {
-        this.$refs.container.classList.remove('activated')
+        this.$refs.container.classList.remove('activated');
+        setTimeout(function() {
+          this.$refs.container.classList.remove('actuating');
+        }.bind(this), 1000);
       } else {
-        this.$refs.container.classList.add('activated')
+        this.$refs.container.classList.add('activated');
+        this.$refs.container.classList.add('actuating');
       }
     }
   }
@@ -76,7 +80,7 @@ export default {
   padding: 0.5em;
   transform: translate(-100%, -50%);
   background-color: rgb(255, 255, 255);
-  transition: transform 0.5s ease-in-out;
+  transition: transform 1s ease-in-out;
   filter: opacity(80%) drop-shadow(0 0 3em);
 }
 
@@ -155,7 +159,7 @@ export default {
   transform: translateX(-100%);
 }
 
-.container:not(.activated):hover {
+.container:not(.actuating):hover {
   transform: translate(-95%, -50%);
 }
 </style>

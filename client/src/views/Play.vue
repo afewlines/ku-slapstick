@@ -11,7 +11,7 @@
     </div>
     <div v-else
       class="box">
-      <h3> Waiting for host to start game... </h3>
+      <h3> Waiting for Host to Start Game</h3>
     </div>
 
     <FooterComponent></FooterComponent>
@@ -158,6 +158,17 @@ export default {
 </script>
 
 <style scoped>
+h3 {
+  display: inline-block;
+  margin: 3em 0;
+  padding: 1em;
+  font-weight: 100;
+  font-style: italic;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.57);
+  animation: 6s ease-in-out infinite pulse;
+}
+
 body {
   overflow: hidden;
 }
@@ -186,5 +197,19 @@ body {
   margin: 1em 0;
   text-align: center;
   padding: 1%;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 1em 0 white;
+  }
+
+  50% {
+    box-shadow: 0 0 2.5em -0.5em white;
+  }
+
+  100% {
+    box-shadow: 0 0 1em 0 white;
+  }
 }
 </style>
