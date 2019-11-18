@@ -6,18 +6,51 @@ var questionCount = 5;
 var timerLength = 10000;
 
 words = [
-  "blurp",
-  "nerp",
-  "yelt",
-  "mansquatch",
-  "word1",
-  "word2",
-  "word3",
-  "word4",
-  "word5",
-  "word6",
-  "word7",
-  "word8",
+  "Mansquatch",
+  "Chyorckle",
+  "Bobulus",
+  "Stevetanaka",
+  "Moople",
+  "Chort",
+  "Zonkle",
+  "Klormp",
+  "Pnuemonolank",
+  "Zgloerven",
+  "Konk",
+  "Snorp",
+  "Noogle",
+  "Hurkler",
+  "Ponklo",
+  "Alphanoose",
+  "Polymoose",
+  "Eigle",
+  "Yeckle",
+  "Doink",
+  "Stoink",
+  "Worple",
+  "Quarck",
+  "Andruple",
+  "Rheudocow",
+  "Turckle",
+  "Flaglametric",
+  "Inculbar",
+  "Oinogoose",
+  "Sadmansad",
+  "Furk",
+  "Gonk",
+  "Jimbarslim",
+  "Lizzord",
+  "Zuccislizardrobot",
+  "Xytromidon",
+  "Clackle",
+  "Vynumerofive",
+  "Czechoslomooseia",
+  "Bald-horkus",
+  "Flabadon",
+  "Tinklevonbon",
+  "Dopameme",
+  "Flibble",
+  "Bighugelarge",
 ]
 
 function getRandomWords() {
@@ -104,7 +137,7 @@ module.exports = {
     for(var i=0; i < questionCount; i++) {
       this.payload.currentWord = gameWords[i];
       this.sendUpdate();
-      await sleep(timerLength); // TODO: have admin set timer
+      await sleep(timerLength);
 
       // select best answer
       this.payload.phase = 2;
@@ -112,7 +145,7 @@ module.exports = {
         this.payload.answers.push(this.playerData[player][1]);
       }
       this.sendUpdate();
-      await sleep(timerLength);
+      await sleep(10000);
       this.payload.phase = 1;
       this.payload.answers = [];
     } // end for
