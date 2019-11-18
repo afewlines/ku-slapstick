@@ -14,17 +14,19 @@ app.get('/game_modules/*', function (req, res) {
 });
 
 io.on('connection', client => {
-  console.log("CLIENT CONNECTED");
   client.on('event', data => {
     // event template
   });
   client.on('disconnect', () => {
     api.removePlayer(client.id);
-    console.log("CLIENT DISCONNECTED");
+    updateLeaderboard();
+    console.log(`DISCON ${client.id}`);
   });
   client.on('addPlayer', (username) => {
-    console.log(`Adding player ${client.id} as ${username}`);
-    client.emit('messageChannel', 'Player Added');
+    console.log(`CONNEC ${client.id}, ${username}`);
+    api.registerPlayer(client.id, username);
+    updateLeaderboard();
+    //client.emit('messageChannel', 'Player Added');
   });
   client.on('getAlive', data => {
     io.emit('connected');
@@ -33,23 +35,19 @@ io.on('connection', client => {
     api.registerPlayer(client.id, data);
   });
   client.on('submitAdmin', (game, timer) => {
-    console.log(`Admin Submit: ${game} | ${timer}`);
+    console.log(`ADMNSB ${game}, ${timer}`);
     client.emit('messageChannel', 'Setting Successfully Set');
   });
-
   client.on('submitPlay', (data) => { // on admin page and game is selected
     api.submitPlay(data);
   });
-
   client.on('clearCurrentGame', () => { // on admin page and game is selected
     api.clearCurrentGame();
     io.emit('reloadPage');
   });
-  
   client.on('submitChat', (user, msg) => {
     io.emit('chat', [user, msg]);
   });
-
   client.on('apiCall', (target = null) => {
     if (target) {
       if (typeof api[target] === "function") {
@@ -61,37 +59,36 @@ io.on('connection', client => {
       client.emit('ret', api);
     }
   });
-
   client.on('getGames', data => {
     client.emit('getGames', api.games);
   });
-
   client.on('setGame', target => {
     api.load(target);
   });
-
   client.on('getRendererPlayer', data => {
     client.emit('rendererPlayer', api.getRendererPlayer());
   });
-
   client.on('getRendererAdmin', data => {
     client.emit('rendererAdmin', api.getRendererAdmin());
   });
-
   client.on('getUpdate', data => {
     client.emit('update', api.getPayload());
   });
-
   client.on('sendUpdate', data => {
     io.emit('update', api.getPayload());
+    updateLeaderboard();
   });
-
   client.on('submitUserInput', data => {
-    //console.log(data);
     api.submitUserInput(data);
   });
-
+  client.on('getLeaderboardData', data => {
+    client.emit('leaderboardData', api.getLeaderboardData());
+  });
 })
+
+function updateLeaderboard() {
+  io.sockets.emit('leaderboardData', api.getLeaderboardData());
+}
 
 function forceUpdate() {
   io.sockets.emit('update', api.getPayload());

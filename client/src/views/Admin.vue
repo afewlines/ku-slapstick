@@ -1,7 +1,10 @@
 <template>
 <div class="app-wrapper">
+  <LeaderboardComponent>
+  </LeaderboardComponent>
   <div class="wrapper">
-    <HeaderComponent></HeaderComponent>
+    <HeaderComponent ref="header">
+    </HeaderComponent>
 
     <div v-if="loaded">
       <RendererAdmin id="renderer"> </RendererAdmin> <!-- GAME COMPONENT -->
@@ -27,6 +30,7 @@
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
+import Leaderboard from '@/components/Leaderboard.vue'
 
 function remoteComponent(url) {
   const name = url.split('/').reverse()[0];
@@ -58,6 +62,7 @@ export default {
   components: {
     'FooterComponent': Footer,
     'HeaderComponent': Header,
+    'LeaderboardComponent': Leaderboard,
     'RendererAdmin': () => remoteComponent(window.App.$store.getters.getRendererAdmin)
   },
   data() {
@@ -86,9 +91,10 @@ export default {
     rendererAdmin(data) {
       // gets/loads the vue framework
       if (data) {
-        this.$store.commit('setRendererAdmin', this.$socket.io.uri + data);
+        this.$store.commit('setRendererAdmin', this.$socket.io.uri + data.url);
         this.loaded = true;
         this.requestUpdate();
+        this.$refs.header.subtitle = data.name;
       }
     },
     async update(data) {
@@ -143,7 +149,7 @@ h3 {
   font-style: italic;
 }
 
-* {
+body {
   overflow: hidden;
 }
 
@@ -159,10 +165,11 @@ h3 {
 .wrapper {
   width: 100%;
   max-width: 800px;
-  height: 90vh;
-  min-height: 600px;
-  max-height: 1080px;
-  margin: 5vh auto auto auto;
+  height: auto;
+  margin: auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .box {

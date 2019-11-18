@@ -1,7 +1,10 @@
 <template>
 <div class="app-wrapper">
+  <LeaderboardComponent>
+  </LeaderboardComponent>
   <div class="wrapper">
-    <HeaderComponent></HeaderComponent>
+    <HeaderComponent>
+    </HeaderComponent>
 
     <div v-if="loaded">
       <RendererPlayer id="renderer"> </RendererPlayer> <!-- GAME COMPONENT -->
@@ -16,10 +19,10 @@
 </div>
 </template>
 
-
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
+import Leaderboard from '@/components/Leaderboard.vue'
 import Vue from 'vue'
 import request from 'request'
 
@@ -48,33 +51,38 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+var grab = document.querySelector;
+
 export default {
   name: 'Play',
   components: {
     'FooterComponent': Footer,
     'HeaderComponent': Header,
+    'LeaderboardComponent': Leaderboard,
     'RendererPlayer': () => remoteComponent(window.App.$store.getters.getRendererPlayer)
   },
   data() {
     return {
       isConnected: false,
       loaded: false,
-      updating: false
+      updating: false,
+      deets: 0
     }
   },
-  beforeMount() {
+  computed: {
+
+  },
+  beforeCreate() {
     if (this.$store.getters.getUsername == "") {
-      //this.$router.push('/'); // make sure username is set
-      //return;
+      this.$router.push('/'); // make sure username is set
+      location.reload();
+      return;
     }
   },
   sockets: {
     connect() {
       // Fired when the socket connects.
       this.isConnected = true;
-      if (!this.$store.getters.getUsername) {
-        //this.$router.push('/');
-      }
       this.$socket.emit('getRendererAdmin');
       this.requestUpdate();
     },
@@ -83,6 +91,11 @@ export default {
       let username = this.$store.getters.getUsername;
       if (username.length > 0) {
         this.$socket.emit('alive', username)
+      } else {
+        window.alert('Username Error');
+        this.$router.push('/');
+        location.reload();
+        return;
       }
     },
 
@@ -129,7 +142,6 @@ export default {
       location.reload();
     },
   },
-  
   methods: {
     requestUpdate() {
       this.$socket.emit('getUpdate');
@@ -140,16 +152,13 @@ export default {
         username: this.$store.getters.getUsername,
         payload: data
       })
-    },
-    api(target) {
-      this.$socket.emit('apiCall', target);
     }
   },
 }
 </script>
 
 <style scoped>
-* {
+body {
   overflow: hidden;
 }
 
@@ -165,10 +174,11 @@ export default {
 .wrapper {
   width: 100%;
   max-width: 800px;
-  height: 90vh;
-  min-height: 600px;
-  max-height: 1080px;
-  margin: 5vh auto auto auto;
+  height: auto;
+  margin: auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .box {

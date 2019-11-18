@@ -43,7 +43,7 @@ module.exports = {
   },
   getRendererAdmin: function () {
     if (this.currentGame) {
-      return this.currentGame.getRendererAdmin();
+      return { url: this.currentGame.getRendererAdmin(), name: this.currentGame.name };
     }
     return null;
   },
@@ -53,6 +53,13 @@ module.exports = {
     }
     return null;
   },
+  getLeaderboardData: function () {
+    if (this.currentGame) {
+      return { players: this.players, game: { name: this.currentGame.name, author: this.currentGame.author, desc: this.currentGame.description } }
+    }
+    return { players: this.players, game: null }
+
+  },
   submitUserInput: function (payload) {
     if (this.currentGame) {
       return this.currentGame.submitUserInput(payload);
@@ -60,6 +67,11 @@ module.exports = {
     return null;
   },
   registerPlayer: function (id, payload) {
+    for (var p in this.players) {
+      if (this.players[p] == id) {
+        delete this.players[p];
+      }
+    }
     this.players[payload] = id;
     this.updatePlayers();
   },

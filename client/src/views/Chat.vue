@@ -1,7 +1,10 @@
 <template>
 <div class="app-wrapper">
+  <LeaderboardComponent>
+  </LeaderboardComponent>
   <div class="wrapper">
-    <HeaderComponent></HeaderComponent>
+    <HeaderComponent>
+    </HeaderComponent>
 
     <div class="chat">
       <div class="message"
@@ -37,6 +40,7 @@
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
+import Leaderboard from '@/components/Leaderboard.vue'
 
 
 
@@ -45,6 +49,7 @@ export default {
   components: {
     'FooterComponent': Footer,
     'HeaderComponent': Header,
+    'LeaderboardComponent': Leaderboard,
   },
   data() {
     return {
@@ -52,6 +57,13 @@ export default {
       userMessage: '',
       messages: [],
       messageCount: 0
+    }
+  },
+  beforeCreate() {
+    if (this.$store.getters.getUsername == "") {
+      this.$router.push('/');
+      location.reload();
+      return;
     }
   },
   sockets: {

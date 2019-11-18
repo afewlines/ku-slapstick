@@ -1,5 +1,7 @@
 <template>
 <div class="app-wrapper">
+  <LeaderboardComponent>
+  </LeaderboardComponent>
   <div class="wrapper">
     <HeaderComponent>
     </HeaderComponent>
@@ -44,12 +46,14 @@
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
+import Leaderboard from '@/components/Leaderboard.vue'
 
 export default {
   name: 'LandingScene',
   components: {
     'FooterComponent': Footer,
     'HeaderComponent': Header,
+    'LeaderboardComponent': Leaderboard,
   },
   data() {
     return {
@@ -114,6 +118,10 @@ export default {
 </script>
 
 <style scoped>
+body {
+  overflow: hidden;
+}
+
 .app-wrapper {
   margin: 0;
   padding: 0;
@@ -125,9 +133,12 @@ export default {
 
 .wrapper {
   width: 100%;
-  max-width: 550px;
-  height: 500px;
-  margin: calc(50vh - 250px) auto auto auto;
+  max-width: 800px;
+  height: auto;
+  margin: auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .box {
