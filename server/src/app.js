@@ -100,6 +100,7 @@ function updateLeaderboard() {
 
 function forceUpdate() {
   io.sockets.emit('update', api.getPayload());
+  io.sockets.emit('connected');
 }
 
 api.loadGames(function () {

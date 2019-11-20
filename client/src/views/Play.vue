@@ -123,6 +123,12 @@ export default {
     },
 
     async update(data) {
+      if (this.$store.getters.getUsername.length <= 0) {
+        this.$router.push('/');
+        location.reload();
+        return;
+      }
+
       if (!this.loaded) {
         this.$socket.emit('getRendererPlayer');
       }
@@ -153,7 +159,6 @@ export default {
       this.$socket.emit('getUpdate');
     },
     submitUserInput(data) {
-      console.log(data);
       this.$socket.emit('submitUserInput', {
         username: this.$store.getters.getUsername,
         payload: data

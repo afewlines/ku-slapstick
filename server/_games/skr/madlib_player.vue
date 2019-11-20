@@ -2,9 +2,9 @@
 
 <template>
 <div>
-  <link href="https://fonts.googleapis.com/css?family=Bowlby+One+SC|Josefin+Sans&display=swap"
+  <link href="https://fonts.googleapis.com/css?family=Comfortaa|Josefin+Sans&display=swap"
     rel="stylesheet">
-  
+
   <div v-if="typeof(payload.phase) != 'undefined' "
     :style="getStyle('box')">
     <div v-if="payload.phase == 0">
@@ -28,36 +28,47 @@
 
     <div v-else-if="payload.phase == 1">
       <div v-if="payload.judge == username">
+        <div :style="getStyle('text')">
+          ~ choose your favorite ~
+        </div>
         <div v-for="submission in payload.submissions"
-          v-on:click="choose(submission)">
-          <div :style="getStyle('user')">
-            {{ submission[0] }}
-          </div>
-          <div :style="getStyle('sub')">
-            {{ buildPrompt(submission[1]) }}
+          v-on:click="choose(submission)"
+          style="text-align: left;">
+          <div :style="getStyle('subcontainer')"
+            v-on:mouseenter="hover($event, {backgroundColor: 'rgb(40,40,40)'})"
+            v-on:mouseleave="hover($event, {backgroundColor: ''})">
+            <div :style="getStyle('user')">
+              {{ submission[0] }}
+            </div>
+            <div :style="getStyle('sub')">
+              {{ buildPrompt(submission[1]) }}
+            </div>
           </div>
         </div>
       </div>
       <div v-else>
         <div :style="getStyle('req')">
-          You said:
+          you said-
         </div>
         <div :style="getStyle('h1')">
-          {{ this.buildPrompt(this.userSubmission) }}
+          {{ this.buildPrompt(this.lastSubmission) }}
         </div>
       </div>
     </div>
 
-    <div v-else-if="payload.phase == 2">
+    <div v-else-if="payload.phase == 2"
+      style="text-align: left;">
       <div :style="getStyle('h2')">
-        Winner:
+        ~ winner ~
       </div>
       <br />
-      <div :style="getStyle('user')">
-        {{ payload.winner[0] }}
-      </div>
-      <div :style="getStyle('sub')">
-        {{ buildPrompt(payload.winner[1]) }}
+      <div :style="getStyle('subcontainer')">
+        <div :style="getStyle('user')">
+          {{ payload.winner[0] }}
+        </div>
+        <div :style="getStyle('sub')">
+          {{ buildPrompt(payload.winner[1]) }}
+        </div>
       </div>
     </div>
   </div>
@@ -72,6 +83,7 @@ export default {
       payload: {},
       userInput: "",
       userSubmission: [],
+      lastSubmission: [],
       username: this.$store.getters.getUsername
     }
   },
@@ -94,24 +106,31 @@ export default {
       this.payload.target.required.shift();
       if (this.payload.target.required.length < 1) {
         this.$parent.submitUserInput(this.userSubmission);
+        this.lastSubmission = this.userSubmission;
+        this.userSubmission = [];
       }
     },
     choose(target) {
       this.$parent.submitUserInput(target);
+    },
+    hover(event, mod) {
+      for (var prop in mod) {
+        event.target.style[prop] = mod[prop];
+      }
     },
     getStyle(target) {
       let payload = []
       switch (target) {
         case 'box':
           payload = [
-            'width: 80%;',
+            'width: 100%;',
             'height: 50vh;',
             'margin: 2em auto;',
             'text-align: center;',
-            'background-color: rgb(92, 94, 91);',
-            'box-shadow: 0 0 5em 0 rgb(30, 30, 30) inset;',
+            'background-color: rgb(20, 21, 20);',
             'overflow-x: hidden;',
             'overflow-y: auto;',
+            'padding: 1em;',
           ]
           break;
         case 'req':
@@ -120,6 +139,16 @@ export default {
             'height: auto;',
             'padding: 3em 0 2em;',
             'font-size: 2em;',
+            'margin: 0 auto;',
+            'color: rgb(191, 191, 191);',
+          ]
+          break;
+        case 'text':
+          payload = [
+            "font-family: 'Josefin Sans', sans-serif;",
+            'height: auto;',
+            'padding: 1em 0;',
+            'font-size: 1.5em;',
             'margin: 0 auto;',
             'color: rgb(191, 191, 191);',
           ]
@@ -152,7 +181,6 @@ export default {
           break;
         case 'user':
           payload = [
-            'width: 85%;',
             'margin: 0 auto 0;',
             'padding: 0.5em 0 0;',
             "font-family: 'Josefin Sans', sans-serif;",
@@ -163,7 +191,6 @@ export default {
           break;
         case 'sub':
           payload = [
-            'width: 80%;',
             'margin: 0 auto 0.5em;',
             "font-family: 'Josefin Sans', sans-serif;",
             'font-weight: 100;',
@@ -175,11 +202,19 @@ export default {
           break;
         case 'h2':
           payload = [
-            "font-family: 'Bowlby One SC', cursive;",
+            'padding: 0.5em;',
+            "font-family: 'Comfortaa', cursive;",
             'font-weight: 100;',
             'font-size: 2em;',
             'text-align: center;',
             'color: rgb(235, 235, 235);',
+          ]
+          break;
+        case 'subcontainer':
+          payload = [
+            'display: inline-block;',
+            'transition: background-color 0.25s ease-in-out;',
+            'padding: 0.5em;',
           ]
           break;
       }

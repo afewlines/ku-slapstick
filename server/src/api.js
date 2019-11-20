@@ -11,6 +11,7 @@ module.exports = {
   load: function (target) {
     this.currentGame = this.games[target];
     this.currentGame.init(this.hookUpdate);
+    this.updatePlayers();
   },
   getGames: function () {
     return this.games.map(x => x.name)
@@ -67,13 +68,24 @@ module.exports = {
     return null;
   },
   registerPlayer: function (id, payload) {
+    console.log(this.players, payload);
+    if (this.players[payload]) {
+      if (this.players[payload] == id) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     for (var p in this.players) {
       if (this.players[p] == id) {
         delete this.players[p];
       }
     }
+
     this.players[payload] = id;
     this.updatePlayers();
+    return true;
   },
   removePlayer: function (payload) {
     for (var p in this.players) {

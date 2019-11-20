@@ -138,6 +138,12 @@ export default {
     requestUpdate() {
       this.$socket.emit('getUpdate');
     },
+    submitUserInput(data) {
+      this.$socket.emit('submitUserInput', {
+        username: '!ADMIN',
+        payload: data
+      })
+    }
     //submitPlay() {
     //  this.$socket.emit('submitPlay', "BEGIN GAME");
     //  this.$socket.emit('apiCall', 'init');

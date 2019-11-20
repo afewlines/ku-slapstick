@@ -24,12 +24,27 @@ prompts = [{
 }, {
   required: ['number', 'number', 'adjective', 'adjective', 'noun'],
   prompt: "{1} {5}, {2} {5}, {3} {5}, {4} {5}.",
+}, {
+  required: ['time', 'noun, plural'],
+  prompt: "It's {1}, do you know where your {2} are?",
+}, {
+  required: ['noun', 'noun', 'noun'],
+  prompt: "A {1} in the {2} is worth two in the {3}.",
+}, {
+  required: ['noun', 'noun'],
+  prompt: "{1} before {2}, never sicker. {2} before {1} and you're in the clear.",
+}, {
+  required: ['verb, imperative', 'verb, imperative', 'verb, imperative', 'noun, plural'],
+  prompt: "'{4} makes a man {1}, {2}, and {3}' - T. Nashe, 1594",
+}, {
+  required: ['adjective', 'verb, imperative', 'a liquid'],
+  prompt: "Grilled Cheese Pro Tips: Use {1} cheese, {2} the bread, and serve with {3}.",
 }]
 
 module.exports = {
-  name: "Madlibs",
+  name: "madlibs",
   author: "brad, seeker",
-  description: "hey hey we're the monkies.",
+  description: "3+ players. give it what it asks, then choose your preference.",
   active: false,
   sendUpdate: function () { console.log("Update hook not connected."); },
   payload: {
@@ -40,7 +55,6 @@ module.exports = {
     players: {},
     winner: null
   },
-  submitted: 0,
   init: async function (hookUpdate) {
     console.log("Starting brad, seeker's MADLIB");
     this.sendUpdate = hookUpdate;
@@ -55,7 +69,6 @@ module.exports = {
       }
     }
     this.payload.judge = judge;
-    this.active = true;
     this.sendUpdate();
     return true;
   },
@@ -68,9 +81,28 @@ module.exports = {
   getRendererAdmin: function () {
     return "/game_modules/madlib_admin";
   },
-  submitUserInput: function (payload) {
-    if (payload.username == this.payload.judge) {
+  submitUserInput: async function (payload) {
+    if (payload.username == "!ADMIN") {
+      switch (payload.payload) {
+        case 'reset':
+          this.payload.target = prompts[Math.floor(Math.random() * prompts.length)];
+          this.payload.phase = 0;
+          this.payload.submissions = [];
+          this.payload.winner = null;
+          var judge = Math.floor(Math.random() * countObj(this.payload.players));
+          for (var p in this.payload.players) {
+            if (judge-- <= 0) {
+              judge = p;
+              break;
+            }
+          }
+          this.payload.judge = judge;
+          this.sendUpdate();
+          return;
+      }
+    } else if (payload.username == this.payload.judge) {
       this.payload.winner = payload.payload;
+      this.payload.submissions.splice(this.payload.submissions.findIndex((x) => x[0] == payload.payload[0]), 1);
       this.payload.phase = 2;
       this.sendUpdate();
     } else {

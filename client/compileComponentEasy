@@ -1,0 +1,4 @@
+#!/bin/sh
+a=`basename $1`
+npx vue-cli-service build --target lib --formats umd-min --no-clean --dest ../server/game_modules --name "${a%.*}_player" "../server/_games/$1_player.vue"
+npx vue-cli-service build --target lib --formats umd-min --no-clean --dest ../server/game_modules --name "${a%.*}_admin" "../server/_games/$1_admin.vue"

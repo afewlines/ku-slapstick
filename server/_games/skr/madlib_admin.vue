@@ -2,7 +2,7 @@
 
 <template>
 <div>
-  <link href="https://fonts.googleapis.com/css?family=Bowlby+One+SC|Josefin+Sans&display=swap"
+  <link href="https://fonts.googleapis.com/css?family=Comfortaa|Josefin+Sans&display=swap"
     rel="stylesheet">
 
   <div v-if="typeof(payload.phase) != 'undefined'"
@@ -21,11 +21,10 @@
     </div>
 
     <div v-else-if="payload.phase == 1">
-      <br />
+      <div :style="getStyle('h1')">
+        ~ what y'all said ~
+      </div>
       <div v-for="submission in payload.submissions">
-        <div :style="getStyle('user')">
-          {{ submission[0] }}
-        </div>
         <div :style="getStyle('sub')">
           {{ buildPrompt(submission[1]) }}
         </div>
@@ -33,16 +32,34 @@
     </div>
 
     <div v-else-if="payload.phase == 2">
-      <br />
-      <div :style="getStyle('h2')">
-        Winner
+      <div :style="getStyle('h1')">
+        ~ winner ~
+        <div :style="getStyle('btn1')"
+          v-on:click="command('reset')">
+          next
+        </div>
+        <div :style="getStyle('btn2')"
+          v-on:click="endGame()">
+          quit
+        </div>
       </div>
-      <br />
       <div :style="getStyle('user')">
         {{ payload.winner[0] }}
       </div>
       <div :style="getStyle('sub')">
         {{ buildPrompt(payload.winner[1]) }}
+      </div>
+      <br />
+      <div :style="getStyle('h1')">
+        - the rest -
+      </div>
+      <div v-for="submission in payload.submissions">
+        <div :style="getStyle('user')">
+          {{ submission[0] }}
+        </div>
+        <div :style="getStyle('sub')">
+          {{ buildPrompt(submission[1]) }}
+        </div>
       </div>
     </div>
 
@@ -71,15 +88,12 @@ export default {
       }
       return 'Error';
     },
-    submit() {
-      this.userSubmission.push(this.userInput);
-      this.userInput = "";
-      this.payload.target.required.shift();
-      if (this.payload.target.required.length < 1) {
-        this.$parent.submitUserInput(this.userSubmission);
-        this.payload.phase = 1;
-        this.payload.submissions = this.userSubmission;
-      }
+    command(target) {
+      this.$parent.submitUserInput(target);
+    },
+    endGame() {
+      this.$socket.emit('clearCurrentGame');
+      location.reload();
     },
     getStyle(target) {
       let payload = []
@@ -90,10 +104,10 @@ export default {
             'height: 50vh;',
             'margin: 2em auto;',
             'text-align: center;',
-            'background-color: rgb(92, 94, 91);',
-            'box-shadow: 0 0 5em 0 rgb(30, 30, 30) inset;',
+            'background-color: rgb(20, 21, 20);',
             'overflow-x: hidden;',
             'overflow-y: auto;',
+            'padding: 1em;',
           ]
           break;
         case 'req':
@@ -139,6 +153,46 @@ export default {
             'font-size: 1.25em;',
             'text-align: left;',
             'color: rgb(171, 167, 167);',
+          ]
+          break;
+        case 'h2':
+          payload = [
+            'padding: 0.5em;',
+            "font-family: 'Comfortaa', cursive;",
+            'font-weight: 100;',
+            'font-size: 2em;',
+            'text-align: center;',
+            'color: rgb(235, 235, 235);',
+          ]
+          break;
+        case 'btn1':
+          payload = [
+            'position: absolute;',
+            'padding: 0.5em;',
+            'margin: 0.25em;',
+            'top: 25%;',
+            'right: 3vw;',
+            "font-family: 'Josefin Sans', sans-serif;",
+            'font-weight: 100;',
+            'font-size: 0.75em;',
+            'text-align: center;',
+            'color: rgb(20,21,20);',
+            'background-color: rgba(255,255,255,128);',
+          ]
+          break;
+        case 'btn2':
+          payload = [
+            'position: absolute;',
+            'padding: 0.5em;',
+            'margin: 0.25em;',
+            'top: 25%;',
+            'left: 3vw;',
+            "font-family: 'Josefin Sans', sans-serif;",
+            'font-weight: 100;',
+            'font-size: 0.75em;',
+            'text-align: center;',
+            'color: rgb(20,21,20);',
+            'background-color: rgba(255,255,255,128);',
           ]
           break;
       }
