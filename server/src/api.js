@@ -84,14 +84,12 @@ module.exports = {
     }
   },
   updatePlayers: function () {
-    if (this.currentGame) {
+    if (this.currentGame)
       this.currentGame.updatePlayers(this.players);
-    }
     return null;
   },
   submitPlay: function (data = null) {
-    if (this.currentGame) {
+    if (this.currentGame)
       this.currentGame.gameLogic(data);
-    }
   },
 }

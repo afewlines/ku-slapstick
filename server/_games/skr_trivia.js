@@ -104,11 +104,8 @@ module.exports = {
   playerScores: [],
   
   init: async function (hookUpdate) {
-    console.log("Starting Gaming Trivia", hookUpdate);
+    console.log("Loading Gaming Trivia", hookUpdate);
     this.sendUpdate = hookUpdate;
-    this.payload.gameEnd = false;
-    this.payload.question = false;
-    this.payload.questionNum = 0;
 
     return true;
   }, // end init
@@ -123,19 +120,15 @@ module.exports = {
     return this.payload;
   },
   submitUserInput: function (payload) {
-    console.log(payload);
-    var newScore = true, correct;
+    //console.log(payload);
+    var newScore = true, correct = 0;
 
-    if(payload.payload == qaAnswers[this.payload.questionNum]) {
+    if(payload.payload == qaAnswers[this.payload.questionNum]) // if correct
       correct = 1;
-    } else {
-      correct = 0;
-    }
-    //console.log("correct(" + correct + ")");
     
     for(player in this.playerScores) { // check if player already added
       if(this.playerScores[player][0] == payload.username) {
-        this.playerScores[player][1] += correct; // score goes up 1
+        this.playerScores[player][1] += correct; // modify score
         newScore = false;
         //console.log("score: " + this.playerScores[player]);
         break;
@@ -149,12 +142,17 @@ module.exports = {
   },
 
   gameLogic: async function (data) {
-    console.log("Beginning Trivia Game");
+    console.log("Starting Trivia Game");
     if(data != null) {
       timerLength = Number(data[0]) * 1000; // ms
       questionCount = Number(data[1]);
     }
 
+    this.answers = [];
+    this.playerScores = [];
+    qaList = [];
+    qaAnswers = [];
+    
     var promise = readCSV();
     promise.then(qa => (  // when csv file is done being read
       processCSV(qa),
@@ -177,10 +175,18 @@ module.exports = {
     this.payload.gameEnd = true;
     this.payload.scores = this.playerScores; 
     this.sendUpdate();
+
+    // clear for next game
+    this.payload.question = null;
+    this.payload.questionNum = 0;
+    this.payload.gameEnd = false;
+    this.payload.submitted = false;
   },
 
   
   updatePlayers: function (payload) {
+    //console.log("Trivia players: ", payload);
     
   },
+
 } // end module.exports

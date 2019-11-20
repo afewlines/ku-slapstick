@@ -84,6 +84,9 @@ io.on('connection', client => {
   client.on('getLeaderboardData', data => {
     client.emit('leaderboardData', api.getLeaderboardData());
   });
+  client.on('gameOver', () => {
+    io.emit('gameOver'); // tell admin game is over
+  });
 })
 
 function updateLeaderboard() {

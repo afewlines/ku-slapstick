@@ -26,7 +26,8 @@
         </div>
 
         <div v-else :style="getStyle('h2')"> <!-- submitted -->
-            Your definition: {{ this.submitted }}
+            Your definition: {{ this.submitted }} <br/>
+            Waiting on other players...
         </div>
       </div>
     </div> <!-- end phase 1 -->
@@ -46,7 +47,8 @@
 
       <div v-else>
         <div :style="getStyle('h1')"> 
-          You selected {{ this.selected }} 
+          You selected {{ this.selected }} <br/>
+          Waiting on other players...
         </div>
       </div>
     </div> <!-- end phase 2 -->
@@ -57,6 +59,7 @@
   <div v-if="payload.gameEnd == true">
     <div :style="getStyle('h1')"> Game Over! </div>
     <div v-html="buildScoreScreen(payload.scores)"> </div>
+    {{ gameEnd() }} <!-- tell admin game is over -->
   </div>
 
 </div>
@@ -79,16 +82,23 @@ export default {
   methods: {
     buildScoreScreen(target) {
       var style = this.getStyle('h2');
-      var html = "<center style=\"float:left;";
-      html += style;
-      html += "\">";
-      html += target[0];
-      html += "  | Score: ";
-      html += target[1];
-      html += "</center>";
+      var html = "";
+      for(var i=0; i < target.length; i++) {
+        html += "<center style=\"float:left;";
+        html += style;
+        html += "\">";
+        html += target[i][0];
+        html += "  | Score: ";
+        html += target[i][1];
+        html += "</center>";
+      }
       return html;
     },
 
+    gameEnd() {
+      this.$socket.emit('gameOver'); // tell admin game over
+    },
+  
     phaseOne() {
       this.selected = null;
       return null;

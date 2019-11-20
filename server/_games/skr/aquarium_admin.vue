@@ -2,23 +2,20 @@
 
 <template>
 <div :style="getStyle('box')">
-  <!-- TODO: fix
   <div v-if="!this.gameStarted">
     <form v-on:submit.prevent="backButton"
       :style="getStyle('back')">
-      <button> Go Back </button>
+      <button> Close Current Game </button>
     </form>
   </div>
   <br/>
-  -->
   
   <div :style="getStyle('h1')"> Aquarium </div>
   <div v-if="!this.gameStarted">
     <div> Timer Length:
     <select v-model="timerLength">
-      <option value="5"> 5 seconds </option>
-      <option default value="10"> 10 seconds </option>
-      <option value="15"> 15 seconds </option>
+      <option value="10"> 10 seconds </option>
+      <option default value="15"> 15 seconds </option>
       <option value="20"> 20 seconds </option>
       <option value="30"> 30 seconds </option>
     </select>
@@ -40,7 +37,10 @@
   </div>
   
   <div v-else>
-    <h1 :style="getStyle('h1')"> Game in progress </h1>
+    <h1 :style="getStyle('h1')">
+      Game in progress <br/>
+      Do not close this window
+    </h1>
   </div>
 </div>
 </template>
@@ -137,6 +137,14 @@ export default {
       }
       return payload.join(' ');
     }
-  }
+  },
+
+  sockets: {
+    gameOver() { // game has finished
+      console.log("game done");
+      this.gameStarted = false;      
+    },
+  },
+
 }
 </script>

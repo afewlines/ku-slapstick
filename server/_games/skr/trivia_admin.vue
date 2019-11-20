@@ -3,15 +3,13 @@
 <template>
 
 <div :style="getStyle('box')">
-  <!-- TODO: fix
   <div v-if="!this.gameStarted">
     <form v-on:submit.prevent="backButton"
       :style="getStyle('back')">
-      <button> Go Back </button>
+      <button> Close Current Game </button>
     </form>
   </div>
   <br/>
-  -->
   
   <div :style="getStyle('h1')"> Gaming Trivia </div>
   <div v-if="!this.gameStarted">
@@ -35,13 +33,16 @@
     <br/>
 
 
-      <form v-on:submit.prevent="submitPlay">
-        <button> Begin Game </button>
-      </form>
+    <form v-on:submit.prevent="submitPlay">
+      <button> Begin Game </button>
+    </form>
   </div>
 
   <div v-else>
-    <h1 :style="getStyle('h1')"> Game in progress </h1> 
+    <h1 :style="getStyle('h1')">
+      Game in progress <br/>
+      Do not close this window
+    </h1> 
   </div>
   
 </div>
@@ -119,6 +120,14 @@ export default {
       return payload.join(' ');
     }
 
-  }
+  },
+
+  sockets: {
+    gameOver() { // game has finished
+      console.log("game done");
+      this.gameStarted = false;      
+    },
+  },
+  
 }
 </script>

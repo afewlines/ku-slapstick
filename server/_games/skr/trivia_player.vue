@@ -34,6 +34,7 @@
   <div v-if="payload.gameEnd" :style="getStyle('h2')">
     <div :style="getStyle('h1')"> Game Over </div>
     <div v-html="buildScoreScreen()"> </div>
+    {{ gameEnd() }} <!-- tell admin game is over -->
   </div>
 
 </div>
@@ -67,6 +68,10 @@ export default {
       }
       html += "</table>";
       return html;
+    },
+
+    gameEnd() {
+      this.$socket.emit('gameOver'); // tell admin game over
     },
   
     submitUserInput(index, answer) {
