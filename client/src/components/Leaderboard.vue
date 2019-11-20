@@ -20,6 +20,7 @@
       tag="div">
       <div v-for="(id, name) in players"
         class="player"
+        @click="clickPlayer($event.target)"
         :key="id">
         {{ name }}
       </div>
@@ -34,7 +35,8 @@ export default {
   data() {
     return {
       players: [],
-      game: null
+      game: null,
+      admin: false
     }
   },
   mounted() {
@@ -57,6 +59,12 @@ export default {
       } else {
         this.$refs.container.classList.add('activated');
         this.$refs.container.classList.add('actuating');
+      }
+    },
+    clickPlayer(el) {
+      if (this.admin) {
+        console.log(el);
+        this.$socket.emit('kickPlayer', el.innerText);
       }
     }
   }

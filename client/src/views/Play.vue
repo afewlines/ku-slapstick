@@ -80,6 +80,12 @@ export default {
     }
   },
   sockets: {
+    kick(target) {
+      if (target == this.$store.getters.getUsername) {
+        location.reload();
+      }
+    },
+
     connect() {
       // Fired when the socket connects.
       this.isConnected = true;

@@ -1,11 +1,10 @@
 <template>
 <div class="app-wrapper">
-  <LeaderboardComponent>
+  <LeaderboardComponent ref="players">
   </LeaderboardComponent>
   <div class="wrapper">
     <HeaderComponent ref="header">
     </HeaderComponent>
-
     <div v-if="loaded">
       <RendererAdmin id="renderer"> </RendererAdmin> <!-- GAME COMPONENT -->
     </div>
@@ -17,6 +16,7 @@
         v-on:click="setGame(index)">
         <div class="gameName">
           {{ game.name }}
+          <span> {{ game.author }}</span>
         </div>
       </div>
     </div>
@@ -79,6 +79,9 @@ export default {
   },
   beforeMount() {
     this.refreshAdmin();
+  },
+  mounted() {
+    this.$refs.players.admin = true;
   },
   sockets: {
     messageChannel(data) {
@@ -147,6 +150,8 @@ export default {
 h3 {
   font-weight: 100;
   font-style: italic;
+  color: #fff;
+  filter: drop-shadow(0 0 1em white);
 }
 
 body {
@@ -181,43 +186,39 @@ body {
 
 .gameSelector {
   display: block;
-  width: 80%;
+  width: auto;
   height: 2em;
-  margin: auto;
-  border: none;
-  background-color: #fff;
-  color: #3a3c38;
-  text-align: center;
-  font-weight: lighter;
-  font-size: 1em;
-  transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+  margin: 0.5em auto;
+  #border: none;
 }
 
 .gameName {
+  display: inline-block;
   position: relative;
-  height: 1em;
-  top: calc(50% - 0.5em);
-}
-
-.gameSelector:hover {
-  background-color: rgba(255, 255, 255, 0);
-  color: #fff;
-}
-
-#username {
-  width: 20em;
-  height: auto;
-  margin: auto;
-  padding: 1.25% 2.5%;
-  outline: none;
-  border: none;
+  padding: 0.5em;
   background-color: #fff;
+  white-space: nowrap;
+  font-weight: lighter;
+  font-size: 1em;
   color: #3a3c38;
-  font-size: 1.125em;
-  transition: background-color 1s ease-in-out, color 1s ease-in-out;
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
 }
 
-#username:focus {
+.gameName span {
+  position: absolute;
+  ccolor: #fff;
+  left: 100%;
+  padding: 0.125em 0.25em;
+  font-size: 0.8em;
+}
+
+.gameName span::before {
+  content: 'by';
+  font-size: 0.9em;
+  opacity: 80%
+}
+
+.gameName:hover {
   background-color: rgba(255, 255, 255, 0);
   color: #fff;
 }

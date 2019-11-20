@@ -83,6 +83,12 @@ module.exports = {
       }
     }
   },
+  kickPlayer: function (payload) {
+    if (typeof (this.players[payload]) != 'undefined') {
+      return this.players[payload];
+    }
+    return null;
+  },
   updatePlayers: function () {
     if (this.currentGame)
       this.currentGame.updatePlayers(this.players);

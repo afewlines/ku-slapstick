@@ -28,6 +28,11 @@ io.on('connection', client => {
     updateLeaderboard();
     //client.emit('messageChannel', 'Player Added');
   });
+  client.on('kickPlayer', (username) => {
+    io.emit('kick', username);
+    console.log(`KICKED ${api.kickPlayer(username)}, ${username}`);
+    updateLeaderboard();
+  });
   client.on('getAlive', data => {
     io.emit('connected');
   });
