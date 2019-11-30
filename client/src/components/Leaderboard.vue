@@ -44,7 +44,6 @@ export default {
   },
   sockets: {
     leaderboardData(payload) {
-      console.log(payload);
       this.players = payload.players;
       this.game = payload.game;
     }
@@ -63,7 +62,6 @@ export default {
     },
     clickPlayer(el) {
       if (this.admin) {
-        console.log(el);
         this.$socket.emit('kickPlayer', el.innerText);
       }
     }

@@ -98,7 +98,6 @@ export default {
   },
   methods: {
     submitChat() {
-      console.log("chat", this.userMessage);
       this.$socket.emit('submitChat', this.$store.getters.getUsername, this.userMessage);
       this.userMessage = '';
     }

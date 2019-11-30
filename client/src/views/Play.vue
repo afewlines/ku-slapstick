@@ -3,7 +3,7 @@
   <LeaderboardComponent>
   </LeaderboardComponent>
   <div class="wrapper">
-    <HeaderComponent>
+    <HeaderComponent ref="header">
     </HeaderComponent>
 
     <div v-if="loaded">
@@ -78,6 +78,9 @@ export default {
       location.reload();
       return;
     }
+  },
+  mounted() {
+    this.$refs.header.subtitle = this.$store.getters.getUsername;
   },
   sockets: {
     kick(target) {
