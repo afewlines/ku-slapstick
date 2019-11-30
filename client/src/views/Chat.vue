@@ -76,6 +76,15 @@ export default {
       this.isConnected = false;
     },
 
+    kick(target) {
+      if (target == this.$store.getters.getUsername) {
+        location.reload();
+      }
+    },
+    refresh() {
+      location.reload();
+    },
+
     // Fired when the server sends something on the "messageChannel" channel.
     chat(data) {
       this.messages.push({

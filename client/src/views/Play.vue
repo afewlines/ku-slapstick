@@ -85,11 +85,14 @@ export default {
         location.reload();
       }
     },
+    refresh() {
+      location.reload();
+    },
 
     connect() {
       // Fired when the socket connects.
       this.isConnected = true;
-      this.$socket.emit('getRendererAdmin');
+      //this.$socket.emit('getRendererAdmin');
       this.requestUpdate();
     },
 

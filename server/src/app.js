@@ -98,13 +98,19 @@ function updateLeaderboard() {
   io.sockets.emit('leaderboardData', api.getLeaderboardData());
 }
 
-function forceUpdate() {
-  io.sockets.emit('update', api.getPayload());
-  io.sockets.emit('connected');
+function forceUpdate(admin) {
+  if (admin) {
+    io.sockets.emit('updateAdmin', api.getPayload());
+    io.sockets.emit('connected');
+  } else {
+    io.sockets.emit('update', api.getPayload());
+    io.sockets.emit('connected');
+  }
 }
 
-api.loadGames(function () {
-  forceUpdate();
+api.loadGames(function (admin = false) {
+  forceUpdate(admin);
 }.bind(forceUpdate));
 
+setTimeout(function () { io.sockets.emit('refresh'); }, 1000);
 server.listen(4578);

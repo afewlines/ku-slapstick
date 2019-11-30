@@ -71,10 +71,18 @@ export default {
     disconnect() {
       this.isConnected = false;
     },
+    kick(target) {
+      if (target == this.$store.getters.getUsername) {
+        location.reload();
+      }
+    },
     // Fired when the server sends something on the "messageChannel" channel.
     messageChannel(data) {
       this.socketMessage = data;
       this.messageReceived = true;
+    },
+    refresh() {
+      location.reload();
     },
 
   },

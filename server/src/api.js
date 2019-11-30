@@ -68,7 +68,6 @@ module.exports = {
     return null;
   },
   registerPlayer: function (id, payload) {
-    console.log(this.players, payload);
     if (this.players[payload]) {
       if (this.players[payload] == id) {
         return true;
