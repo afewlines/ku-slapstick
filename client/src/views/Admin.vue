@@ -84,6 +84,9 @@ export default {
     this.$refs.players.admin = true;
   },
   sockets: {
+    refresh() {
+      location.reload();
+    },
     messageChannel(data) {
       this.socketMessage = data;
       this.messageReceived = true;
@@ -100,7 +103,18 @@ export default {
         this.$refs.header.subtitle = data.name;
       }
     },
-    async update(data) {
+    update(data) {
+      this.updateData(data);
+    },
+    updateAdmin(data) {
+      this.updateData(data);
+    },
+    getGames(data) {
+      this.games = data;
+    }
+  },
+  methods: {
+    async updateData(data) {
       if (!this.loaded) {
         this.$socket.emit('getRendererAdmin');
       }
@@ -118,13 +132,7 @@ export default {
 
       target.__vue__.payload = data;
       this.updating = false
-
     },
-    getGames(data) {
-      this.games = data;
-    }
-  },
-  methods: {
     refreshAdmin() {
       this.$socket.emit('getGames');
       this.$socket.emit('getRendererAdmin');

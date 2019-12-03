@@ -3,7 +3,7 @@
   <LeaderboardComponent>
   </LeaderboardComponent>
   <div class="wrapper">
-    <HeaderComponent>
+    <HeaderComponent ref="header">
     </HeaderComponent>
 
     <div v-if="loaded">
@@ -79,17 +79,23 @@ export default {
       return;
     }
   },
+  mounted() {
+    this.$refs.header.subtitle = this.$store.getters.getUsername;
+  },
   sockets: {
     kick(target) {
       if (target == this.$store.getters.getUsername) {
         location.reload();
       }
     },
+    refresh() {
+      location.reload();
+    },
 
     connect() {
       // Fired when the socket connects.
       this.isConnected = true;
-      this.$socket.emit('getRendererAdmin');
+      //this.$socket.emit('getRendererAdmin');
       this.requestUpdate();
     },
 

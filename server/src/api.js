@@ -24,7 +24,7 @@ module.exports = {
       file = files[file];
       // check if js file, load if so
       // TODO: implement further verification
-      if (file.substr(-3) == ".js") {
+      if (file[0] != "." && file.substr(-3) == ".js") {
         console.log("Plugin found: ", file);
         this.games.push(require(`../_games/${file}`));
         this.count += 1;
@@ -68,7 +68,6 @@ module.exports = {
     return null;
   },
   registerPlayer: function (id, payload) {
-    console.log(this.players, payload);
     if (this.players[payload]) {
       if (this.players[payload] == id) {
         return true;
